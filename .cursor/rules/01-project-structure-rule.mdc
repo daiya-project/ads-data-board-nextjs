@@ -1,0 +1,130 @@
+---
+description: Next.js App Router layout; app/, components/ui (Shadcn), lib/api (data only), lib/utils; mandatory structure
+globs: "app/**/*", "components/**/*", "lib/**/*", "types/**/*"
+---
+
+# Map: Project Structure (Next.js)
+
+**This rule is mandatory.** The structure below is **an example only** — it illustrates the intended layout and conventions, not an exhaustive file list. You **must** follow the **structural principles** described here when adding or moving code. Do not invent parallel top-level folders or mix feature code with common code.
+
+## 1. Example layout (reference only — follow the structure, not the exact names)
+
+```
+├── app/                          # Next.js App Router
+│   ├── layout.tsx                # Root layout
+│   ├── page.tsx                  # Home
+│   ├── globals.css               # Global styles (Tailwind entry)
+│   ├── (dashboard)/              # Route group
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx
+│   │   │   └── _components/      # Feature-specific UI for this route
+│   ├── (management)/
+│   ├── api/                      # Route handlers if needed
+│   └── ...
+│
+├── components/
+│   ├── ui/                       # Shadcn/ui only (add via npx shadcn@latest add)
+│   ├── common/                   # Shared UI: Toast, Skeleton, etc.
+│   └── modals/                   # Modals used by multiple features
+│
+├── lib/                          # Shared infra and logic
+│   ├── supabase/                 # Supabase client (server, client, middleware)
+│   ├── api/                      # Pure API / data only (Supabase calls, fetch)
+│   ├── utils/                    # Pure stateless helpers; import via barrel only
+│   ├── logic/                    # (Optional) Shared business logic
+│   └── utils.ts                  # Barrel re-export for utils
+│
+├── types/                        # Global type definitions
+│   └── app-db.types.ts          # App-used DB tables/views (re-export from Supabase generated)
+│
+└── public/                       # Static assets
+```
+
+## 2. Mandatory structural rules
+
+### 2.1 Route-specific vs common
+
+- **Common (shared):** Anything used by **more than one route or page** belongs in `components/` (excluding route-specific `_components/`), `lib/`, or `types/`. Put data layer in `lib/api/`, shared logic in `lib/` or `lib/logic/`, shared UI in `components/common/` or `components/modals/`.
+- **Route/feature-specific:** Code that belongs to **one route or feature** **must** live in that route’s folder under `app/`, e.g. `app/(dashboard)/dashboard/_components/` for UI and (if needed) a small `lib/` or inline helpers next to the route. **Do not** put route-specific screens or widgets in `components/`; keep them in `app/.../_components/`.
+
+### 2.2 lib/api/ — pure data communication only
+
+- **lib/api/** must contain **only** code that performs **API calls and data communication** (e.g. Supabase client calls, fetch, request/response handling). No orchestration, aggregation, or domain rules here.
+- **Shared business logic** belongs in **lib/** or **lib/logic/**. Components and pages call `lib/api/` for data and `lib/` or `lib/logic/` for that logic.
+
+### 2.3 components/ is common only
+
+- **components/ui/** is **only** for Shadcn/ui components; add via `npx shadcn@latest add <component>`. Do not paste in external copies.
+- **components/common/** and **components/modals/** are for UI **reused across the app** (Toast, Skeleton, modals). **Do not** put route-specific screens here; those go in `app/<route>/_components/`.
+
+### 2.4 UI vs logic
+
+- **Do not** put API calls or complex business logic inside component files. Use **lib/api/** for data, **lib/** or **lib/logic/** for shared logic; components **call** these and **render** only. Server Components can fetch in `page.tsx` or in a server-side helper in `lib/`.
+
+### 2.5 Component and style conventions
+
+- Prefer **one component per file** (e.g. `KpiCard.tsx`). Use a **folder** when a component has multiple files (e.g. `KpiCard/KpiCard.tsx`, `KpiCard/index.ts`). **index.ts** is the entry only: re-export; do not put business logic there.
+- **Styling:** Use **Tailwind CSS** and **Shadcn/ui** classes. Do not add component-specific global CSS unless necessary; keep global styles in `app/globals.css`.
+
+### 2.6 Global styles
+
+- **app/globals.css** is the global style entry (Tailwind directives, design tokens if any). Component-level styling is done via Tailwind classes or Shadcn variants; avoid adding new global utility files unless the project already uses them.
+
+### 2.7 models/ vs types/
+
+- **models/** (e.g. under a route or feature): Use for **classes or complex state objects with business logic** (methods, validation). Not for plain data shapes.
+- **types/** (project root `types/` or next to a feature): Use for **pure TypeScript interfaces and type definitions only** — no runtime logic. Common types go in **types/**; route-only types can live next to the route (e.g. `app/(dashboard)/dashboard/types.ts`).
+- **App database types:** Use **types/app-db.types.ts** to re-export `Database` and Row/Insert/Update types for tables/views used by the app (Supabase-generated schema can live in `database.types.ts`). Use types from `app-db.types.ts` when typing Supabase responses or payloads.
+
+### 2.8 Images and assets
+
+- **Global assets:** Use **public/** for logos, favicon, common icons, and static files. Reference them from the root (e.g. `/logo.svg`).
+- **Component/feature-specific assets:** Place in the **same folder as the component** or in an `assets/` subfolder of that component/route.
+
+### 2.9 utils import (barrel only)
+
+- **Shared utilities** under **lib/utils/** **must** be imported via the **utils barrel** only (e.g. `from '@/lib/utils'` or the project’s alias). Do **not** import from subpaths such as `lib/utils/logger`.
+- This keeps import paths consistent and refactors easier.
+
+### 2.10 Feature/route communication (decoupling)
+
+- **Avoid cross-route imports:** Prefer not to import one route’s `_components` or logic into another route. Keep routes independent.
+- **Cross-route communication:** Use **events**, **URL/searchParams**, or **shared state** (e.g. React context, or a Zustand store in `stores/`). Do not reach into another route’s modules to read or mutate state.
+
+## 3. Top-level folders
+
+| Folder            | Role                                                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **app/**          | Next.js App Router: layout.tsx, page.tsx, globals.css; route groups and route-specific `_components/`.                               |
+| **components/ui/**| Shadcn/ui only; add via `npx shadcn@latest add`.                                                                                      |
+| **components/**   | Common UI (common/, modals/) reused across the app.                                                                                  |
+| **lib/api/**      | **Pure API / data only** (Supabase, fetch). No business logic.                                                                       |
+| **lib/**          | Supabase client (lib/supabase/), **shared business logic**, **lib/utils/** (barrel only).                                           |
+| **lib/logic/**    | (Optional) Shared business logic if separated from lib/.                                                                              |
+| **types/**        | **Pure** TypeScript interfaces/types. App DB types → **types/app-db.types.ts**. See §2.7.                                            |
+| **public/**       | Static assets (favicon, images).                                                                                                     |
+
+## 4. Rule summary (mandatory)
+
+| Rule                    | Do                                                                                                                                 |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Route vs common**     | Route-specific code → `app/<route>/_components/` (and local lib/types). Common → `components/`, `lib/`, `types/`.                  |
+| **lib/api/ data only**  | Only API/data in `lib/api/`. Shared business logic → `lib/` or `lib/logic/`.                                                     |
+| **components/ common**  | Only app-wide reusable UI in `components/` (ui = Shadcn; common, modals). No route-specific UI here.                              |
+| **UI vs logic**         | No API or business logic in component files. Use `lib/api/` for data, `lib/` for shared logic; components only call and render.   |
+| **Styling**             | Tailwind + Shadcn. Global styles in `app/globals.css`.                                                                             |
+| **models/ vs types/**   | models/ = classes with business logic; types/ = pure interfaces. App DB types = `types/app-db.types.ts`.                          |
+| **Assets**              | Global → `public/`. Component/feature-only → same folder as component or `assets/` subfolder.                                      |
+| **utils import**        | Use the **lib/utils barrel** only (e.g. `@/lib/utils`). Do not import from subpaths.                                               |
+| **Route communication** | Avoid cross-route imports. Use events, URL/state, or Zustand store in `stores/`.                                                |
+
+## Checklist
+
+- [ ] Is this code for one route only? → `app/<route>/_components/` or next to the route.
+- [ ] Is this UI reused across the app? → `components/common/` or `components/modals/`. Shadcn → `components/ui/` via CLI.
+- [ ] New API/data layer → `lib/api/` only. New shared logic → `lib/` or `lib/logic/`. Components only call and render?
+- [ ] New pure helpers → `lib/utils/` (barrel)?
+- [ ] Common types → `types/`. DB table/view types → `types/app-db.types.ts`?
+- [ ] Styling via Tailwind/Shadcn; global only in `app/globals.css`?
+- [ ] Shared utils imported via barrel (`@/lib/utils` or project alias) only?
+- [ ] Cross-route communication via events or shared store only (no importing another route’s internals)?

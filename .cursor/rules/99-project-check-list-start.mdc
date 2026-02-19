@@ -1,0 +1,100 @@
+---
+alwaysApply: false
+---
+
+# Project Initial Setup Checklist
+
+**Purpose:** A one-time checklist to verify when bootstrapping a new project (or cloning fresh). Run through each item before starting development. Do **not** read any files unless the user explicitly asks — only confirm the existence/presence of each item.
+
+## 1. Package Manager & Scripts
+
+- [ ] `package.json` exists at the project root
+- [ ] `"dev"` script is defined (e.g. `"dev": "next dev"`)
+- [ ] `"build"` script is defined (e.g. `"build": "next build"`)
+- [ ] `"update-types"` (or equivalent) script is defined to download `database.types.ts` from Supabase. **This project's Supabase project ID:** `lmftwznuhgphousfojpb` (e.g. `"update-types": "npx supabase gen types typescript --project-id lmftwznuhgphousfojpb > types/database.types.ts"`)
+- [ ] Core dependencies installed: `next`, `react`, `react-dom`, `@supabase/supabase-js`, `tailwindcss` (and Shadcn if used)
+
+## 2. TypeScript Configuration
+
+- [ ] `tsconfig.json` exists at the project root
+- [ ] `"strict": true` is set
+- [ ] Path aliases configured if the project uses them (e.g. `"@/*": ["./*"]` for Next.js)
+
+## 3. Environment Variables
+
+- [ ] `.env` (or `.env.local`) file exists with Supabase credentials:
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [ ] `.env` is listed in `.gitignore`
+
+## 4. Supabase Type Files
+
+- [ ] `types/database.types.ts` exists (Supabase-generated full schema)
+- [ ] `types/app-db.types.ts` exists (app-level re-exports of tables/views the app actually uses)
+- [ ] After cloning, `npm run update-types` (or equivalent) has been executed at least once to generate `database.types.ts`
+
+## 5. Project Structure (Next.js)
+
+- [ ] `app/` — App Router: `layout.tsx`, `page.tsx`, `globals.css`
+- [ ] `app/api/` — route handlers if needed
+- [ ] `components/ui/` — Shadcn/ui components (add via `npx shadcn@latest add`)
+- [ ] `components/common/` or `components/modals/` — shared reusable UI
+- [ ] `lib/api/` — API / data communication layer only
+- [ ] `lib/supabase/` or `lib/` — Supabase client, shared logic
+- [ ] `lib/utils/` — shared utilities (barrel import)
+- [ ] `types/` — global type definitions, `app-db.types.ts`
+- [ ] `public/` — static assets
+
+## 6. Styling
+
+- [ ] `app/globals.css` exists (global CSS entry, Tailwind v4 `@import "tailwindcss"`, `@theme` blocks, CSS variables)
+- [ ] **No `tailwind.config.ts` or `tailwind.config.js`** — Tailwind CSS v4 uses CSS-first configuration entirely in `app/globals.css`
+- [ ] `postcss.config.mjs` exists with `@tailwindcss/postcss` plugin
+- [ ] Component-level styling uses Tailwind / Shadcn; no component-specific global CSS unless necessary
+
+## 7. Next.js Entry
+
+- [ ] `app/layout.tsx` exists (root layout)
+- [ ] `app/page.tsx` exists (home or root page)
+
+## 8. Version Control
+
+- [ ] `.gitignore` includes: `node_modules/`, `.next/`, `out/`, `.env`, `.env.local`
+- [ ] Initial commit has been made
+
+## 9. Cursor Rules
+
+- [ ] `.cursor/rules/` folder exists with project rule files (`.mdc`)
+- [ ] `.cursor/rules/caption/` folder exists for Korean caption files
+- [ ] _(If using shared rules from `_cursor-rules`)_: `"rules:sync"` script is defined in `package.json` scripts. Skip if this project uses only project-local rules.
+
+### Shared rules (symbolic links)
+
+Shared/common rules are used via **symbolic links** to `_cursor-rules` (e.g. under `dev/_cursor-rules`). The `rules:sync` script in `package.json` creates these links so that `.cursor/rules/` and `.cursor/rules/caption/` point to the shared rule files.
+
+**Terminal commands** (run from project root; ensure `_cursor-rules` exists at the path used below, e.g. `dev/_cursor-rules`):
+
+```bash
+mkdir -p .cursor/rules/caption
+cd .cursor/rules
+ln -sf ../../../_cursor-rules/*.mdc .
+cd caption
+ln -sf ../../../../_cursor-rules/caption/*.md .
+```
+
+**package.json script** (add to `scripts`):
+
+```json
+"rules:sync": "cd .cursor/rules && ln -sf ../../../_cursor-rules/*.mdc . && cd caption && ln -sf ../../../../_cursor-rules/caption/*.md ."
+```
+
+- **Creating new shared rules:** Create or edit rule files in the **`_cursor-rules`** repository (not in the project's `.cursor/rules/`). Then run `npm run rules:sync` in the project so the new or updated files are linked.
+- **Symlinked files:** Editing a symlinked file in the project folder updates the same file in `_cursor-rules` (the link target). Changes are shared across all projects that use that link.
+- **Non-symlinked files:** Files in `.cursor/rules/` that are **not** symlinked (e.g. project-only rules) are independent of `_cursor-rules`. They are not overwritten by `rules:sync` and do not affect the shared rule set.
+
+## How to Use
+
+1. Open this checklist when setting up a new project or cloning a repository for the first time.
+2. Go through each section and verify the item exists or is configured.
+3. **Do not read file contents** — only confirm presence/existence unless the user explicitly requests a file review.
+4. Mark items as done. If any item is missing, create or configure it before proceeding with development.

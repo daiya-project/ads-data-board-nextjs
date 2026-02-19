@@ -1,0 +1,53 @@
+/* Toast — ComponentName__Element */
+.Toast__container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.Toast__item {
+    background: var(--text-main);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 200px;
+    animation: toastSlideIn 0.3s ease-out, toastFadeOut 0.3s ease-in 1.7s;
+    animation-fill-mode: forwards;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.Toast__item i {
+    font-size: 18px;
+    color: var(--success);
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastFadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}

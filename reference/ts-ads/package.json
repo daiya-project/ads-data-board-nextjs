@@ -1,0 +1,22 @@
+{
+  "name": "ads-data-board",
+  "version": "1.0.0",
+  "description": "광고 데이터 보드",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite",
+    "update-types": "npx supabase gen types typescript --project-id 'lmftwznuhgphousfojpb' > src/shared/types/database.types.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
+    "chart.js": "^4.4.0"
+  }
+}

@@ -1,0 +1,20 @@
+/* Dashboard page scope — font override from _backup dashboard.css */
+#dashboard-page {
+  font-family: var(--font-data);
+}
+
+#dashboard-page * {
+  font-family: inherit;
+}
+
+#dashboard-page .cgt-label,
+#dashboard-page .cgt-value {
+  font-family: var(--font-data);
+}
+
+#dashboard-page .glass-dropdown-trigger,
+#dashboard-page .glass-dropdown-value,
+#dashboard-page .glass-dropdown-label,
+#dashboard-page .glass-dropdown-item {
+  font-family: var(--font-sans);
+}

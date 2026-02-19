@@ -1,0 +1,56 @@
+---
+description: Iconography and emoji rules; use lucide-react only; no native text emojis in UI.
+alwaysApply: true
+---
+
+# Iconography & Emojis (Strict Rules)
+
+## 1. Default Rule: No Native Text Emojis in UI
+
+**Do not use native OS text emojis** (e.g. 💰, 📈, ⚠️, ✅) in the UI. They render inconsistently across platforms (Windows vs macOS vs mobile).
+
+## 2. Primary Icon Set: lucide-react
+
+**Always use `lucide-react`** for icons in the UI.
+
+- **Import:** `import { IconName } from "lucide-react"`
+- **Styling:** Use Tailwind classes for size and color (e.g. `className="w-4 h-4 text-muted-foreground"`).
+
+### Common mappings (use Lucide instead of emoji)
+
+| Avoid (emoji) | Use (lucide-react)        |
+|---------------|---------------------------|
+| 💰            | `<DollarSign />`          |
+| 📈            | `<TrendingUp />`          |
+| ⚠️            | `<AlertCircle />`         |
+| ✅            | `<CheckCircle2 />`        |
+| ❌            | `<XCircle />` or `<X />`  |
+| ℹ️            | `<Info />`                |
+
+```tsx
+// ✅ GOOD
+import { DollarSign, TrendingUp } from "lucide-react";
+
+<DollarSign className="w-4 h-4 text-muted-foreground" />
+<TrendingUp className="w-5 h-5 text-green-600" />
+```
+
+```tsx
+// ❌ BAD — native emoji in UI
+<span>💰 Revenue</span>
+```
+
+## 3. Exceptions (Only When Explicitly Requested)
+
+Use alternative icon/emoji assets **only** if the user explicitly asks for them:
+
+- **Microsoft Fluent Emoji (3D):** If the user asks for "3D emojis" or "cute vibes", use the Next.js `Image` component with Fluent Emoji assets (CDN or local).
+- **Twemoji:** If the user explicitly requests "Twemoji", use Twemoji graphics via CDN.
+
+If the user does **not** ask for "3D", "Twemoji", or similar, **default to `lucide-react`**.
+
+## Checklist
+
+- [ ] No native text emojis (💰, 📈, etc.) in UI code?
+- [ ] Icons imported from `lucide-react` and styled with Tailwind?
+- [ ] Alternative emoji sets (Fluent, Twemoji) used only when the user explicitly requested them?

@@ -1,0 +1,529 @@
+/* ═══════════════════════════════════════════════════════════════
+   Goal Cards — BEM: GoalsLayout__*, WeekHeader__*, GoalCard__*, EmptyWeekCard__*
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── GoalsLayout ─── */
+.GoalsLayout__container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 20px 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.GoalsLayout__headerRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.GoalsLayout__categoryDivider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0 16px 0;
+    width: 100%;
+}
+
+.GoalsLayout__dividerLine {
+    flex: 1;
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+.GoalsLayout__dividerText {
+    white-space: nowrap;
+}
+
+.GoalsLayout__categoryRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.GoalsLayout__weekColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.GoalsLayout__headerRowNew {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.GoalsLayout__headerRow--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.GoalsLayout__categoryRowNew {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.GoalsLayout__categoryRow--3col {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.GoalsLayout__weekColumnNew {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+/* ─── WeekHeader ─── */
+.WeekHeader__root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    padding: 10px 8px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+    height: 48px;
+    box-sizing: border-box;
+}
+
+.WeekHeader__root.current-week {
+    background: #fee2e2;
+}
+
+.WeekHeader__root:hover {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    cursor: pointer;
+}
+
+.WeekHeader__root.current-week:hover {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+}
+
+.WeekHeader__rootNew {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+}
+
+.WeekHeader__text {
+    flex: 1;
+    text-align: center;
+}
+
+.WeekHeader__rootNew.current-week {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-color: #fecaca;
+    color: #dc2626;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+}
+
+.WeekHeader__navArrow {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: normal;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    width: 32px;
+    height: 28px;
+    flex-shrink: 0;
+    line-height: 1;
+    padding: 0;
+}
+
+.WeekHeader__navArrow:hover {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.1);
+}
+
+.WeekHeader__navArrow:active {
+    opacity: 0.7;
+}
+
+.WeekHeader__navArrow--hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.WeekHeader__navArrow--left,
+.WeekHeader__navArrow--right {
+    /* direction modifier for TS */
+}
+
+.WeekHeader__cloneBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.WeekHeader__cloneBtn:hover {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.1);
+}
+
+.WeekHeader__cloneBtn:active {
+    opacity: 0.7;
+}
+
+/* ─── GoalCard (grid card) ─── */
+.GoalCard__root {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--glass-shadow);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.GoalCard__root.GoalCard__root--categoryNew,
+.GoalCard__root.goal-category-new {
+    background: rgba(254, 226, 226, 0.15);
+}
+
+.GoalCard__root.GoalCard__root--categoryUpsalesBig,
+.GoalCard__root.goal-category-upsales_big {
+    background: rgba(224, 231, 255, 0.15);
+}
+
+.GoalCard__root.GoalCard__root--categoryUpsalesSmb,
+.GoalCard__root.goal-category-upsales_smb {
+    background: rgba(191, 219, 254, 0.15);
+}
+
+.GoalCard__root.GoalCard__root--categoryOutbound,
+.GoalCard__root.goal-category-outbound {
+    background: rgba(243, 232, 255, 0.15);
+}
+
+.GoalCard__root.GoalCard__root--categoryEtc,
+.GoalCard__root.goal-category-etc {
+    background: rgba(241, 245, 249, 0.2);
+}
+
+.GoalCard__root:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-light);
+}
+
+.GoalCard__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.GoalCard__categoryBadge {
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.GoalCard__categoryBadge--new,
+.goal-category-new {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.GoalCard__categoryBadge--upsalesBig,
+.goal-category-upsales_big {
+    background: #e0e7ff;
+    color: #4f46e5;
+}
+
+.GoalCard__categoryBadge--upsalesSmb,
+.goal-category-upsales_smb {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.GoalCard__categoryBadge--outbound,
+.goal-category-outbound {
+    background: #f3e8ff;
+    color: #9333ea;
+}
+
+.GoalCard__categoryBadge--etc,
+.goal-category-etc {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.GoalCard__objective {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.4;
+    margin-top: 8px;
+}
+
+.GoalCard__objectiveTitle {
+    flex: 1;
+    text-align: left;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.GoalCard__objectiveAchievement {
+    font-size: 18px;
+    font-weight: 800;
+    font-family: var(--font-data);
+    text-align: right;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.GoalCard__progressSection {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.GoalCard__progressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.GoalCard__progressLabel {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.GoalCard__progressRevenue {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: var(--font-data);
+    color: var(--text-main);
+    text-align: right;
+}
+
+.GoalCard__progressPercent {
+    font-size: 20px;
+    font-weight: 800;
+    font-family: var(--font-data);
+    line-height: 1;
+}
+
+.achievement-high {
+    color: #ef4444;
+}
+
+.achievement-mid {
+    color: #f59e0b;
+}
+
+.achievement-low {
+    color: #3b82f6;
+}
+
+.GoalCard__progressBarBg {
+    width: 100%;
+    height: 8px;
+    background-color: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.GoalCard__progressBarFill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
+
+.bg-high {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+.bg-mid {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.bg-low {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.GoalCard__metricsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.GoalCard__metricItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.GoalCard__metricLabel {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.GoalCard__metricValue {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: var(--font-data);
+}
+
+.GoalCard__metricValue--target {
+    color: var(--primary);
+}
+
+.GoalCard__targetClientsInfo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-sub);
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: auto;
+    margin-bottom: 4px;
+}
+
+.GoalCard__actionSummary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-sub);
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: auto;
+}
+
+.GoalCard__actionSummary i {
+    color: var(--primary);
+    font-size: 14px;
+}
+
+/* ─── EmptyWeekCard ─── */
+.EmptyWeekCard__root {
+    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+    border: 2px dashed #e5e7eb;
+    border-radius: 16px;
+    padding: 48px 32px;
+    text-align: center;
+    margin: 20px 0;
+    transition: all 0.3s ease;
+}
+
+.EmptyWeekCard__root:hover {
+    border-color: #d1d5db;
+    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.EmptyWeekCard__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.EmptyWeekCard__icon i {
+    font-size: 48px;
+    color: #9ca3af;
+    opacity: 0.6;
+}
+
+.EmptyWeekCard__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 8px;
+}
+
+.EmptyWeekCard__description {
+    font-size: 13px;
+    color: #9ca3af;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .GoalsLayout__container {
+        flex-direction: column;
+    }
+
+    .GoalsLayout__weekColumn {
+        min-width: 100%;
+    }
+
+    .GoalsLayout__headerRowNew,
+    .GoalsLayout__categoryRowNew {
+        grid-template-columns: 1fr;
+    }
+}

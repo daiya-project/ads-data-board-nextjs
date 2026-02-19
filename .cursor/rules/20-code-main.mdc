@@ -1,0 +1,136 @@
+---
+description: CORE RULE. React/Next.js component architecture; Tailwind + Shadcn; useEffect cleanup for side effects.
+alwaysApply: true
+---
+
+# Core Coding Standards: React & Next.js Component Architecture
+
+**MANDATORY:** All UI development MUST follow React and Next.js patterns. Use the project stack only: Next.js (App Router), React, Tailwind CSS, Shadcn/ui. See `00-project-main.mdc` for tech stack; see `01-project-structure-rule.mdc` for folder layout.
+
+## 1. Component Strategy (React + JSX)
+
+**❌ STRICTLY PROHIBITED:**
+
+- Do NOT use vanilla DOM APIs for UI (e.g. `insertAdjacentHTML`, `document.createElement`, class-based components with `render()`/`getHTML()`).
+- Do NOT put UI markup in `index.html` or outside the App Router (Next.js owns the root document).
+
+**✅ REQUIRED:**
+
+- **React function components:** Implement UI as **function components** that return JSX. Use TypeScript for props and state.
+- **One component per file** (e.g. `KpiCard.tsx`). Use a folder when a component has multiple files (e.g. `KpiCard/KpiCard.tsx`, `KpiCard/index.ts`); `index.ts` only re-exports.
+- **Server vs Client:** Prefer **Server Components** by default. Add `"use client"` only when the component needs hooks (`useState`, `useEffect`), event handlers, or browser APIs. Keep client boundaries as low as possible (leaf components).
+
+```tsx
+// ✅ GOOD — React function component with TypeScript
+type KpiCardProps = {
+  title: string;
+  value: string | number;
+};
+
+export function KpiCard({ title, value }: KpiCardProps) {
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+      <span className="text-2xl font-semibold">{value}</span>
+    </div>
+  );
+}
+```
+
+```tsx
+// ✅ GOOD — Client component only where needed (e.g. interactivity)
+"use client";
+
+import { useState } from "react";
+
+export function FilterButton() {
+  const [open, setOpen] = useState(false);
+  return (
+    <button type="button" onClick={() => setOpen(!open)}>
+      Toggle
+    </button>
+  );
+}
+```
+
+## 2. Styling Strategy (Tailwind + Shadcn)
+
+**✅ REQUIRED:**
+
+- **Tailwind CSS:** Use utility classes for layout, spacing, typography, and colors. Prefer Tailwind over custom CSS.
+- **Shadcn/ui:** Use components from `components/ui/`; style via Tailwind classes and the component’s `className` or variant props. Add new Shadcn components with `npx shadcn@latest add <component>`; do not paste in external copies.
+- **Global styles:** Only in `app/globals.css` (Tailwind directives, CSS variables for theme). Do not add new global stylesheets unless the project already uses them.
+- **Component-level:** Prefer Tailwind in JSX. Avoid component-scoped CSS files (e.g. `KpiCard.module.css`) unless necessary (e.g. third-party or complex animations).
+
+**❌ AVOID:**
+
+- BEM or custom class naming for layout/visual styling (use Tailwind instead).
+- Generic global class names that duplicate Tailwind (e.g. `.card .value`, `.title` in a global stylesheet).
+
+```tsx
+// ✅ GOOD — Tailwind + Shadcn semantics
+<div className="rounded-lg border bg-card p-4 shadow-sm">
+  <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+  <span className="text-2xl font-semibold tabular-nums">{value}</span>
+</div>
+```
+
+## 3. Data and Logic (No API in Components)
+
+**✅ REQUIRED:**
+
+- **Data:** Fetch in Server Components (async `page.tsx` or server-side helpers in `lib/`) or call functions from `lib/api/` (Supabase, fetch). Do not put Supabase client calls or fetch logic inside component files; components **call** `lib/api/` or receive data as props and **render** only.
+- **Business logic:** Keep in `lib/` or `lib/logic/`. Components call these and render results; do not embed domain rules or aggregation in UI files.
+
+## 4. Lifecycle and Side Effects (useEffect Cleanup)
+
+**✅ REQUIRED:**
+
+- **Client-only effects:** For event listeners, subscriptions, `setInterval`/`setTimeout`, or other resources in **Client Components**, use `useEffect`. Return a **cleanup function** that removes listeners and clears timers/subscriptions.
+
+```tsx
+// ✅ GOOD — cleanup in useEffect
+"use client";
+
+import { useEffect, useRef } from "react";
+
+export function ResizeObserverBox({ onResize }: { onResize: (w: number) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const ro = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? 0;
+      onResize(width);
+    });
+    ro.observe(el);
+
+    return () => {
+      ro.disconnect();
+    };
+  }, [onResize]);
+
+  return <div ref={ref} />;
+}
+```
+
+```tsx
+// ✅ GOOD — timer cleanup
+useEffect(() => {
+  const id = setInterval(() => tick(), 1000);
+  return () => clearInterval(id);
+}, []);
+```
+
+- **No manual `destroy()`:** React manages unmount. Do not implement class-style `destroy()`; use the cleanup return from `useEffect` only.
+
+## Checklist
+
+- [ ] UI implemented as React function components with JSX (no vanilla DOM or class-based render)?
+- [ ] Styling via Tailwind and Shadcn only; global styles only in `app/globals.css`?
+- [ ] Server Component by default; `"use client"` only where hooks or browser APIs are needed?
+- [ ] No API or business logic inside component files (data from `lib/api/` or props)?
+- [ ] Side effects and subscriptions use `useEffect` with a cleanup function?
+- [ ] One component per file (or one folder with index re-export)?

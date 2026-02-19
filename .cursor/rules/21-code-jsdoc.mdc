@@ -1,0 +1,95 @@
+---
+description: Enforce JSDoc for all new components and hooks
+globs: "**/*.{ts,tsx,js,jsx}"
+---
+
+# JSDoc Policy
+
+## 1. Mandatory Documentation
+
+All **exported** components, hooks, and utility functions must have a JSDoc block.
+
+- **Why:** To improve IntelliSense and maintainability.
+- **When:** Apply this rule immediately when generating new code or refactoring existing logic.
+
+## 2. JSDoc Format Standards
+
+Keep it concise and practical. Do not state the obvious (e.g. `onClick: handles click`).
+
+### For React Components
+
+```tsx
+/**
+ * [Short description of what the component renders.]
+ * @param {Type} propsName - [Critical context: why is this prop needed?]
+ * @example
+ * <KpiRow data={...} isCollapsed={true} />
+ */
+```
+
+### For Hooks
+
+- One-line summary of what the hook does and what it returns.
+- `@param` for each argument when non-obvious.
+- `@returns` when the return value needs explanation.
+
+### For Utility Functions
+
+- One-line summary; `@param` and `@returns` as needed for clarity.
+
+### Other Common Tags (examples)
+
+Use when they add real value; keep descriptions short.
+
+**@returns** — When the return type or meaning is not obvious from the name or TypeScript type.
+
+```ts
+/**
+ * Normalizes date strings from CSV (MM/DD/YYYY, YYYY-MM-DD) to YYYY-MM-DD.
+ * @param {string} raw - User or CSV input
+ * @returns {string} ISO-style date (YYYY-MM-DD) for DB or comparisons
+ */
+export function normalizeDate(raw: string): string { ... }
+```
+
+**@deprecated** — When the API is still supported but should be replaced.
+
+```ts
+/**
+ * Fetches KPI by client. Prefer fetchMonthlyKpi for new code.
+ * @deprecated Use fetchMonthlyKpi and filter by client_id instead. Will be removed in v2.
+ * @param {string} clientId - Client identifier
+ */
+export async function fetchKpiByClient(clientId: string) { ... }
+```
+
+**@throws** — When the function can throw in a documented, callable way.
+
+```ts
+/**
+ * Parses region from URL search params.
+ * @param {URLSearchParams} params
+ * @returns {'kr' | 'us' | 'summary'}
+ * @throws {Error} When region value is not one of kr, us, or missing
+ */
+export function parseRegion(params: URLSearchParams): 'kr' | 'us' | 'summary' { ... }
+```
+
+**@see** — When pointing to a related function, type, or doc helps.
+
+```ts
+/**
+ * Builds table sections from monthly KPI rows. Section order follows DASHBOARD_SECTION_IDS.
+ * @param {MonthlyKpiRow[]} rows - Raw rows from fetchMonthlyKpi
+ * @returns {Object} { months, sections } for KpiTable
+ * @see getDashboardSectionConfig — for section labels and colors
+ */
+export function buildMonthlyTableSections(rows: MonthlyKpiRow[]) { ... }
+```
+
+## 3. Checklist
+
+- [ ] Exported components have a JSDoc block with description and relevant `@param`/`@example`.
+- [ ] Exported hooks have a JSDoc block.
+- [ ] Exported utility functions have a JSDoc block.
+- [ ] Descriptions are concise; no redundant phrases (e.g. "handles click" for `onClick`).

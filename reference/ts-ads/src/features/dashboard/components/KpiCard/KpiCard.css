@@ -1,0 +1,196 @@
+/* KpiCard — Phase 8.2: ComponentName__Element 네이밍 */
+.KpiCard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.KpiCard {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--glass-shadow);
+  border: var(--glass-border);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.KpiCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.1);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.KpiCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.KpiCard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.KpiCard__header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.KpiCard__icon {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border-radius: 12px;
+  margin-left: 10px;
+}
+
+.KpiCard .KpiCard__icon {
+  font-size: 24px;
+  background-color: transparent;
+  color: inherit;
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+
+.KpiCard__value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+}
+
+.KpiCard__change {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-sub);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  border-radius: 6px;
+}
+
+.KpiCard__change.positive {
+  color: var(--success);
+  background: #ecfdf5;
+}
+
+.KpiCard__change.negative {
+  color: var(--danger);
+  background: #fef2f2;
+}
+
+.KpiCard .KpiCard__mainContent {
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.KpiCard .KpiCard__value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  font-family: var(--font-data);
+  text-align: right;
+}
+
+.KpiCard .KpiCard__comparison {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.KpiCard .KpiCard__comparisonLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-sub);
+  text-align: left;
+}
+
+.KpiCard .KpiCard__comparisonValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-family: var(--font-data);
+  text-align: right;
+}
+
+.KpiCard .KpiCard__changeGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.KpiCard .KpiCard__changeGroup .KpiCard__changeAmount {
+  margin-left: auto;
+}
+
+.KpiCard__changeAmount {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-data);
+}
+
+.KpiCard__changeAmount.positive {
+  color: #ef4444;
+}
+
+.KpiCard__changeAmount.negative {
+  color: #3b82f6;
+}
+
+.KpiCard .KpiCard__progressInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.KpiCard .KpiCard__progressItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.KpiCard .KpiCard__progressLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-sub);
+}
+
+.KpiCard .KpiCard__progressValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-family: var(--font-data);
+}
+
+@media (max-width: 768px) {
+  .KpiCard__grid {
+    grid-template-columns: 1fr;
+  }
+}
