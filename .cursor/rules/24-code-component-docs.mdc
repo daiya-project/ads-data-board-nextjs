@@ -1,0 +1,77 @@
+---
+description: Component docs in docs/products/; Covered files list; update doc when those files change.
+globs: ["components/**/*.tsx", "app/**/_components/**/*.tsx", "hooks/**/*.ts", "docs/products/*.md"]
+---
+
+# Component Documentation Rules
+
+To ensure future AI sessions (and developers) understand the **business logic** and **state flow** of the product, create a documentation file whenever a **functional component** or **hook** with non-trivial logic is created. Each doc lists **Covered files**; when any of those files are modified, the doc must be updated.
+
+## 1. Documentation Location & Naming
+
+- **Target folder:** `docs/products/`
+- **Filename:** `[component-kebab-case].md` (e.g. `KpiTable.tsx` → `kpi-table.md`)
+
+## 2. Trigger Condition
+
+- **Create:** Write a doc when you create a component or hook that has business logic, state management, complex interactions, Server Actions/API calls, or is reused in 2+ places. Include **Covered files** (see template).
+- **Update (logic change):** When you refactor or significantly change the logic of an existing component/hook, create the doc if missing, or update the existing doc.
+- **Update (when covered files change):** When you modify **any file listed in a doc's Covered files**, you **must** update that doc:
+  - Refresh **Last updated** (YYYY-MM-DD HH:mm:ss).
+  - Add a row to **Revision history** with the date and a short description of the change.
+  - Update the doc content (Overview, Props, State, Core Logic, AI Guide, State → Action table) if the change affects behavior or state.
+
+## 3. Documentation Template (Markdown)
+
+The documentation **must** follow this structure:
+
+```markdown
+# [Component Name]
+
+## Document info
+- **Created:** YYYY-MM-DD HH:mm:ss
+- **Last updated:** YYYY-MM-DD HH:mm:ss
+
+## Revision history
+| Date | Description |
+|------|-------------|
+| YYYY-MM-DD HH:mm:ss | Initial version. |
+
+## Covered files
+Files documented by this doc. **When you modify any of these, update this doc** (Last updated, Revision history, and content if behavior/state changed).
+
+| Path | Role |
+|------|------|
+| `@/path/to/Component.tsx` | (e.g. Root component) |
+| `@/path/to/Child.tsx` | (e.g. Section body) |
+| `@/hooks/useX.ts` | (e.g. Collapse state) |
+
+## 1. Overview
+- **Path:** (main component path)
+- **Purpose:** (One sentence from the user’s point of view)
+
+## 2. Key Props & State
+(Props, Internal State, Callbacks as needed.)
+
+## 3. Core Logic & Interactions
+(State transitions, helper functions, rendering flow.)
+
+## 4. AI Implementation Guide (For vibe coding)
+
+### State → Action → Implementation (required)
+| State / condition | Meaning | Use this function / API | Where to implement |
+|-------------------|---------|--------------------------|--------------------|
+| ... | ... | ... | ... |
+
+- **Modification rules:** (Where to change for common requests.)
+- **Dependencies:** (Component/hook and lib/ only; do not list Tailwind, Shadcn, lucide-react, etc.)
+```
+
+Sections 5–6 (Edge Cases, Accessibility) when conditions apply — see existing rule text.
+
+## 4. Checklist
+
+- [ ] New component/hook with logic → doc under `docs/products/[name-kebab-case].md` with **Covered files**?
+- [ ] Doc has Document info, Revision history, Covered files, Overview, Props & State, Core Logic, AI Guide (and State → Action table)?
+- [ ] **After editing any file in Covered files** → doc updated (Last updated, Revision history, content)?
+- [ ] Significant logic change or refactor → doc updated?

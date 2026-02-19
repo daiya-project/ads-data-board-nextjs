@@ -1,0 +1,96 @@
+---
+description: Conventions for creating and editing .cursor/rules/*.mdc files
+globs: .cursor/rules/*.mdc
+alwaysApply: false
+---
+
+# Rule Authoring Conventions
+
+When creating or editing files in `.cursor/rules/`, follow these conventions.
+
+## Mandatory: Caption sync (`.cursor/rules/caption/`)
+
+**This rule is mandatory. There are no exceptions.**
+
+**Rule file and caption file are the same file in two languages.** They have identical structure: same frontmatter keys, same headings, same sections. The only difference is language—the rule (`.mdc`) is in English, the caption is in Korean. No omission, no paraphrase.
+
+**Caption file naming:** Use a **`z` prefix** so caption files sort after rule files when searching (e.g. `00-project-main.mdc` → `caption/z00-project-main-kr.md`). This keeps rule files and their captions easy to tell apart.
+
+- **When you create** a new rule file in `.cursor/rules/` (any `.mdc` at the root), you **must** create a caption file at `.cursor/rules/caption/z<basename>-kr.md` (e.g. `00-project-main.mdc` → `caption/z00-project-main-kr.md`). The caption must include:
+  - **The same frontmatter** as the rule: `description` (value written in Korean), and either `alwaysApply` or `globs` (same key and value as in the rule). Code and pattern values (e.g. `globs: "**/*.ts"`) stay unchanged; only natural-language fields like `description` are translated.
+  - **The same body** as the rule, translated into Korean—same headings, same order, same code blocks (comments inside code may be translated if desired).
+- **When you modify** any rule file, you **must** update the corresponding caption at `.cursor/rules/caption/z<basename>-kr.md` so it remains the same file in Korean: same frontmatter structure and same content, in Korean.
+
+If the caption does not exist, create it. If it exists, update it. Do not skip this step.
+
+## File Naming
+
+Rule file names use a **two-digit number**, a **prefix**, and **lowercase with hyphens (kebab-case)** for the rest: `NN-<prefix>-<suffix>.mdc` (e.g. `00-project-main.mdc`).
+
+| Style | Example | Prefer? |
+|-------|---------|---------|
+| 2-digit + prefix + hyphens | `00-project-main.mdc`, `09-project-authoring-rule.mdc` | **Yes** |
+| Title case (first letter per word) | `Project-Main.mdc` | No |
+| No number / wrong prefix | `project-main.mdc`, `map-styles.mdc` | No |
+
+Reasons:
+- **Ordering**: Two-digit prefix gives a stable, human-friendly order (00, 01, …).
+- **Case-insensitive filesystems** (e.g. macOS, Windows): lowercase avoids ambiguity.
+- **Unambiguous**: One naming pattern for all rule files.
+
+**Rule files must use the following structure and one of the allowed prefixes.** No other patterns (e.g. `typescript-standards.mdc`) are allowed.
+
+| Prefix | Use for | Example |
+|--------|---------|---------|
+| **`project`** | Project-wide conventions, baseline, meta (e.g. rule authoring) | `00-project-main.mdc`, `09-project-authoring-rule.mdc` |
+| **`code`** | Code standards, structure (TS, HTML, components, patterns) | `20-code-main.mdc` |
+| **`term`** | Term definitions, glossary, naming vocabulary | `31-term-main.mdc`, `31-term-date.mdc` |
+| **`data`** | Data logic: types, state, fetching, transforms, validation | `40-data-main-rule.mdc` |
+| **`css`** | CSS, styles, layout conventions | `50-css-main.mdc` |
+
+Keep filenames as **`NN-<prefix>-<suffix>.mdc`**: two digits, one of the five prefixes above, then kebab-case suffix.
+
+### Term rules: index + domain files
+
+For **`term`** rules, prefer splitting by domain and using an index file:
+
+- **`NN-term-main.mdc`** (e.g. `31-term-main.mdc`): Index only. List terms and which file defines them. Use `alwaysApply: true` so the AI always has this map. No full definitions here.
+- **`NN-term-<domain>.mdc`** (e.g. `31-term-date.mdc`): Actual definitions. Set `globs` so each file loads when editing relevant code. Definitions apply when their own `globs` (or `alwaysApply`) match.
+
+## File Format
+
+- **Extension**: `.mdc` only.
+- **Location**: `.cursor/rules/` only. Cursor does **not** load rules from subfolders; keep all rule files at the root of `.cursor/rules/`.
+- **Frontmatter**: YAML between `---` at the top. Required fields:
+  - `description`: Short summary (shown in rule picker).
+  - Either `alwaysApply: true` or `globs: <pattern>` (e.g. `**/*.ts`). Do not set both for the same rule in a conflicting way.
+
+## Naming and Role
+
+- Every rule file **must** use the `NN-<prefix>-<suffix>.mdc` pattern with one of the five prefixes: `project`, `code`, `term`, `data`, `css` (see table above).
+- Set `globs` (or `alwaysApply`) so the rule applies to the right files; e.g. `*-code-*.mdc` often use `globs: **/*.{ts,tsx,html}`.
+
+## When the user requests additions to rules
+
+When the user asks you to add something to a rules file:
+- **Text in double quotes** (`"..."`): Add it **exactly as entered**; do not translate or change it.
+- **All other text**: Translate it into English first, then add it to the rule.
+
+## Content
+
+- Write **all rule content in English** (see project-main).
+- Optional: add Korean (or human-only) notes using `[KO]` at the start of a line or `<!-- KO: ... -->`; the AI will ignore them (see project-main).
+- Keep each file focused and under ~50 lines when possible.
+- Prefer concrete examples (good vs bad) in code or list form.
+
+## Checklist for New Rules
+
+- [ ] File is `.mdc` in `.cursor/rules/`
+- [ ] **Caption**: `caption/z<basename>-kr.md` created with the **same structure**: same frontmatter (description in Korean, same `globs`/`alwaysApply`), same sections, content in Korean
+- [ ] Rule frontmatter has `description` and either `alwaysApply` or `globs`
+- [ ] Filename uses `NN-<prefix>-<suffix>.mdc` with one of: `project`, `code`, `term`, `data`, `css`; two-digit number + prefix + kebab-case suffix
+- [ ] Rule content is in English
+
+## Checklist when Modifying Rules
+
+- [ ] **Caption**: `caption/z<basename>-kr.md` updated so it remains the same file in Korean (frontmatter + body)

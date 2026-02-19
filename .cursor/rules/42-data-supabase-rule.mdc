@@ -1,0 +1,142 @@
+---
+description: Supabase 1000-row limit; SELECT .range() pagination, INSERT in 1000-row batches
+globs: "**/*.ts"
+---
+
+# Data: Supabase Pagination (1000-row limit)
+
+PostgREST (Supabase API) returns at most **1000 rows per select** by default. `.limit(10000)` still caps at 1000 if that is the server default. Use the rules below for any query or bulk insert that can exceed 1000 rows.
+
+## 1. Limits
+
+| Operation | Limit | Approach |
+|-----------|-------|----------|
+| **SELECT** | Default max 1000 rows per request | `.range(from, to)` pagination (sequential or parallel) |
+| **INSERT** | Bulk size limited | Split into batches of 1000 and call `insert(batch)` in a loop |
+
+## 2. SELECT — pagination requirements
+
+1. **Use `.range(from, to)`** — `from = offset`, `to = offset + pageSize - 1` (e.g. 1000 per page).
+2. **Keep `.order(...)` identical** — same sort on every page so order is stable.
+3. **Stop when** — returned length < pageSize (last page).
+
+## 3. Sequential pagination
+
+```typescript
+const PAGE_SIZE = 1000;
+let page = 0;
+let hasMore = true;
+const allRows: Row[] = [];
+
+while (hasMore) {
+  const from = page * PAGE_SIZE;
+  const to = (page + 1) * PAGE_SIZE - 1;
+
+  const { data: rows, error } = await supabase
+    .from('your_table')
+    .select('*')
+    .order('id', { ascending: true })
+    .range(from, to);
+
+  if (error) throw error;
+  allRows.push(...(rows ?? []));
+  hasMore = (rows?.length ?? 0) === PAGE_SIZE;
+  page += 1;
+}
+```
+
+## 4. Parallel pagination
+
+Request multiple pages per round, then advance offset.
+
+```typescript
+const PAGE_SIZE = 1000;
+const PARALLEL_PAGES = 4;
+let offset = 0;
+const allRows: Row[] = [];
+
+while (true) {
+  const promises = Array.from({ length: PARALLEL_PAGES }, (_, i) => {
+    const from = offset + i * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+    return supabase
+      .from('your_table')
+      .select('*')
+      .order('client_id', { ascending: true })
+      .order('date', { ascending: false })
+      .range(from, to);
+  });
+
+  const results = await Promise.all(promises);
+  let hasMore = false;
+  for (const res of results) {
+    const rows = res.data ?? [];
+    allRows.push(...rows);
+    if (rows.length === PAGE_SIZE) hasMore = true;
+  }
+  if (!hasMore) break;
+  offset += PARALLEL_PAGES * PAGE_SIZE;
+}
+```
+
+## 5. INSERT — 1000-row batches
+
+For bulk insert, split into **1000-row batches** and call `insert(batch)` in a loop.
+
+```typescript
+const BATCH_SIZE = 1000;
+const batches: Row[][] = [];
+for (let i = 0; i < recordsToInsert.length; i += BATCH_SIZE) {
+  batches.push(recordsToInsert.slice(i, i + BATCH_SIZE));
+}
+
+for (let i = 0; i < batches.length; i++) {
+  const { error } = await supabase.from('your_table').insert(batches[i]);
+  if (error) throw new Error(`Batch ${i + 1} failed: ${error.message}`);
+}
+```
+
+## 6. Error Handling
+
+- **Always check `error`:** After every Supabase call, check the `error` field from `{ data, error }` before using `data`. Do not assume success.
+- **Throw in the data layer:** In `lib/api` (or equivalent data-layer) functions, throw a standard `Error` with a clear, user-facing message. This lets UI components catch it and show a Toast or error state. Optionally log with `console.error` for debugging.
+- **UI must not fail silently:** Components that call these APIs must handle errors (try/catch) and provide feedback—e.g. Toast, error state, or inline message. Never ignore caught errors.
+
+```typescript
+// ✅ Data layer: check error, then throw
+const { data, error } = await supabase.from('your_table').select('*').range(0, 999);
+if (error) {
+  console.error('Fetch failed:', error);
+  throw new Error(`Failed to load data: ${error.message}`);
+}
+return data;
+```
+
+```typescript
+// ❌ BAD — ignoring error
+const { data } = await supabase.from('t').select();
+return data; // may be null; caller has no signal
+```
+
+```typescript
+// ❌ BAD — only logging, no throw
+if (error) console.error(error);
+return data;
+```
+
+## Summary
+
+| Use case | Method |
+|----------|--------|
+| SELECT > 1000 rows | Same `.order()` + `.range(from, to)` in a loop (sequential or parallel) |
+| Bulk INSERT | Split into 1000-row batches, `insert(batch)` per batch |
+| Errors | Check `error` after every call; throw in data layer; UI shows Toast or error state |
+
+## Checklist
+
+- [ ] SELECT that can exceed 1000 rows uses `.range(from, to)` pagination, not only `.limit()`?
+- [ ] Same `.order(...)` used for all pages?
+- [ ] Bulk INSERT split into 1000-row batches?
+- [ ] After each Supabase call, `error` is checked and a standard `Error` is thrown on failure?
+- [ ] UI components that call the API catch errors and show feedback (Toast or error state)?
+- [ ] Error/progress messages include batch index where useful?

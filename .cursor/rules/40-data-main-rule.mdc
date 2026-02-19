@@ -1,0 +1,60 @@
+---
+description: Rules for data types, formatting logic, and metric calculations (business logic).
+globs: "app/**/*.ts", "app/**/*.tsx", "lib/**/*.ts", "lib/**/*.tsx"
+alwaysApply: true
+---
+
+# Data: client_id as String
+
+For identifier consistency, leading-zero preservation, and external system compatibility, treat `client_id` as **string only** everywhere.
+
+## 1. Summary
+
+| Area              | Rule                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------- |
+| **TypeScript**    | `client_id` type is `string` only. Do not use `number` or `Brand<number, 'ClientId'>`    |
+| **SQL / DB**      | Column/parameters: `VARCHAR`, `TEXT`, `uuid` etc. Do not use `INTEGER`, `BIGINT`         |
+| **API / queries** | Supabase responses, RPC args, CSV/form input: pass and receive `client_id` as **string** |
+
+## 2. TypeScript
+
+```typescript
+// ✅ GOOD
+type ClientRow = {
+  client_id: string;
+  client_name: string;
+};
+
+function loadByClient(clientId: string) {
+  return supabase.from("ads_data_client").select("*").eq("client_id", clientId);
+}
+```
+
+```typescript
+// ❌ BAD
+client_id: number;
+client_id: Brand<number, 'ClientId'>;
+.eq('client_id', Number(id));
+```
+
+## 3. SQL / DB
+
+- Table column: `client_id VARCHAR(...)` or `TEXT`, `uuid`.
+- RPC/function args: declare as string type; pass only strings when calling.
+
+## 4. API / queries
+
+- Value passed to Supabase `.eq('client_id', value)` must always be `string`.
+- From CSV/form: do not parse as number; normalize with `String(...)` if needed.
+
+## 5. Rationale
+
+- **Consistency**: Avoid mixed number/string and comparison/key bugs.
+- **Leading zeros**: e.g. `"001"` must not become `1`.
+- **Integration**: Align with external systems that use string IDs.
+
+## Checklist
+
+- [ ] TS types define `client_id` as `string`?
+- [ ] Supabase/RPC calls pass only strings for `client_id`?
+- [ ] CSV/form input never converts `client_id` to number?
