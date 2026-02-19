@@ -1,0 +1,271 @@
+/* ═══════════════════════════════════════════════════════════════
+   MA Chart Revenue — 광고주 데이터 그래프 (이동평균 + 실제 매출)
+   Goal > Monthly 누적 그래프와 달력 사이 배치
+   스펙: docs/ma-chart-dev.md
+   ═══════════════════════════════════════════════════════════════ */
+
+.MaChart__section {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s ease;
+}
+
+.MaChart__section:hover {
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.08);
+}
+
+.MaChart__grid {
+  display: grid;
+  grid-template-columns: 6fr 4fr;
+  gap: 24px;
+  min-height: 440px;
+}
+
+@media (max-width: 1024px) {
+  .MaChart__grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+}
+
+.MaChart__chart-area,
+.MaChart__cards-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.MaChart__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.MaChart__cards-area .MaChart__header {
+  justify-content: flex-end;
+}
+
+.MaChart__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.MaChart__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  flex-shrink: 0;
+}
+
+/* --- 광고주 증감 카드 지표 토글 (REV / vCTR / CVR / CPC) --- */
+.MaChart__metric-toggle {
+  display: inline-flex;
+  background: var(--toggle-pill-bg);
+  border: var(--toggle-pill-border);
+  border-radius: var(--toggle-pill-radius);
+  padding: 3px;
+  gap: 2px;
+}
+
+.MaChart__toggle-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--toggle-pill-inactive-color);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--toggle-pill-radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.MaChart__toggle-btn:hover {
+  color: var(--text-main);
+}
+
+.MaChart__toggle-btn.active {
+  background: var(--toggle-pill-active-bg);
+  color: var(--toggle-pill-active-color);
+  box-shadow: var(--toggle-pill-active-shadow);
+}
+
+.MaChart__chart-wrapper {
+  position: relative;
+  flex: 0 0 400px;
+  height: 400px;
+  min-height: 400px;
+  max-height: 400px;
+}
+
+.MaChart__chart-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.MaChart__cards-container {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 400px;
+  min-height: 400px;
+}
+
+.MaChart__cards-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.MaChart__cards-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.MaChart__cards-container::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 999px;
+}
+
+/* --- 2x4 미니 차트 그리드 (광고주 증감 카드, 높이 가득) --- */
+.MaChart__cards-container--grid {
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  height: 400px;
+  min-height: 400px;
+  max-height: 400px;
+}
+
+.MaChart__mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, 95px);
+  gap: 6px;
+  height: 100%;
+  min-height: 398px;
+  max-height: 400px;
+}
+
+/* 미니 차트 셀 — 글래스모피즘 (고정 높이로 디자인 유지) */
+.MaChart__mini-cell {
+  position: relative;
+  height: 95px;
+  min-height: 95px;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.MaChart__mini-cell:hover {
+  background: var(--glass-bg-hover);
+  border-color: rgba(74, 144, 226, 0.4);
+  box-shadow: 0 4px 20px rgba(31, 38, 135, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.MaChart__mini-cell--selected {
+  background: var(--glass-bg-hover);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25), var(--glass-shadow);
+}
+
+.MaChart__mini-cell canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100%;
+  display: block;
+  border-radius: inherit;
+}
+
+.MaChart__mini-cell--empty {
+  background: rgba(248, 250, 252, 0.72);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  cursor: default;
+}
+
+.MaChart__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 120px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1024px) {
+  .MaChart__chart-wrapper {
+    flex: 0 0 320px;
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
+  }
+  .MaChart__cards-container {
+    height: 320px;
+    min-height: 320px;
+  }
+  .MaChart__cards-container--grid {
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
+  }
+  .MaChart__mini-grid {
+    grid-template-rows: repeat(4, 74px);
+    min-height: 314px;
+    max-height: 320px;
+  }
+  .MaChart__mini-cell {
+    height: 74px;
+    min-height: 74px;
+  }
+}
+
+@media (max-width: 768px) {
+  .MaChart__section {
+    padding: 20px;
+  }
+  .MaChart__chart-wrapper {
+    flex: 0 0 280px;
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
+  }
+  .MaChart__cards-container {
+    height: 280px;
+    min-height: 280px;
+  }
+  .MaChart__cards-container--grid {
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
+  }
+  .MaChart__mini-grid {
+    grid-template-rows: repeat(4, 65px);
+    min-height: 272px;
+    max-height: 280px;
+  }
+  .MaChart__mini-cell {
+    height: 65px;
+    min-height: 65px;
+  }
+}

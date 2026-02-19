@@ -5,85 +5,91 @@ alwaysApply: true
 
 # Project Migration Roadmap
 
-This roadmap guides the order of work for migrating the vanilla TypeScript app to Next.js. It is aligned with **`02-project-migration.mdc`**: use `docs/MIGRATION_ANALYSIS.md` and the `reference/` source when implementing each phase.
+This roadmap lists **migration steps only**. Detailed tasks, AS-IS/TO-BE paths, and checklists are in **`_docs/MIGRATION_ANALYSIS.md`** (sections 9.6, 10, 11). Use **`02-project-migration.mdc`** and the **`_reference/`** source when implementing each step.
 
 ## Phase 0 — Basic project environment
 
-- Set up and verify the **foundation** so the rest of the migration can proceed.
-- Use **project skills** (e.g. Next.js App Router, Vercel/React best practices, frontend design) where they apply.
-- Ensure:
-  - Next.js (App Router), React, Tailwind, Shadcn/ui, and Supabase client are correctly configured.
-  - Environment variables, Supabase URLs/keys, and local run (e.g. `npm run dev`) work.
-  - TypeScript, ESLint, and project structure match `00-project-main.mdc` and `01-project-structure-rule.mdc`.
+- Next.js (App Router), React, Tailwind, Shadcn/ui, Supabase client configured.
+- Env vars, local run (`npm run dev`), build succeed.
+- TypeScript, ESLint, structure match `00-project-main.mdc` and `01-project-structure-rule.mdc`.
 
-**Done when:** App runs locally, builds cleanly, and is ready for layout and pages.
+**Done when:** App runs locally, builds cleanly, ready for layout and pages.
 
 ---
 
-## Phase 1 — Sidebar and layout
+## Phase 1 — Shared modules (Foundation)
 
-- Create **sidebar** and **layout** files so all pages share a consistent shell.
-- Reference: `docs/MIGRATION_ANALYSIS.md` (routing, navigation) and `reference/` (e.g. `reference/ts-ads/src/shared/ui/common/Sidebar/`, navigation feature).
-- Deliver:
-  - Root or dashboard layout that includes the sidebar.
-  - Sidebar component (nav items, active state, links to main sections: Dashboard, Reports, Goal Weekly, Goal Monthly, Settings).
-  - Route groups and placeholders for main pages so navigation works without full content.
+### 1.1 Shared types and utils
+### 1.2 Shared API layer
+### 1.3 Cache / request strategy (e.g. React Query)
+### 1.4 Global CSS migration (tokens, base, layout)
 
-**Done when:** Navigating via sidebar shows the correct route and a basic layout; no feature content required yet.
+**Done when:** Types, `lib/utils/`, `lib/api/` shape, and global styles are in place and importable.
 
 ---
 
-## Phase 2 — Report section appearance
+## Phase 2 — Layout and navigation
 
-- Implement the **report section UI** (look and structure only — no live data yet).
-- Reference: `docs/MIGRATION_ANALYSIS.md` (Reports feature) and `reference/ts-ads/src/features/reports/`.
-- Deliver:
-  - Report page(s) under the App Router (e.g. daily/weekly or a single report view with tabs/filters).
-  - Outer structure: filters (date range, etc.), table/chart placeholders, and any controls that exist in the reference.
-  - Use Tailwind and Shadcn/ui; components can use mock or empty data for now.
+### 2.1 AppShell → Root Layout
+### 2.2 Sidebar → React component
+### 2.3 Custom navigation removal (Next.js App Router)
+### 2.4 Nested routes and layouts (e.g. reports, settings)
+### 2.5 Route placeholders and page shells
 
-**Done when:** Report section looks and behaves like the reference in terms of layout and controls; data is static or mock.
-
----
-
-## Phase 3 — Shared libraries and utils
-
-- Create **shared libraries and utilities** used across features.
-- Reference: `docs/MIGRATION_ANALYSIS.md` (shared modules, data flow) and `reference/ts-ads/src/shared/` (lib, api, utils, types).
-- Deliver:
-  - **lib/utils/** (or equivalent) with barrel export; date/format/validation helpers as needed.
-  - **lib/api/** stubs or modules for report/dashboard data access (signatures aligned with reference).
-  - **types/** (or app-db.types) for shared types; align with reference and Supabase schema.
-  - Any shared logic in **lib/** or **lib/logic/** that is reused by report and other features.
-
-**Done when:** Common helpers and API/data layer shape are in place and importable; no need for full implementation of every endpoint yet.
+**Done when:** Sidebar and layout work; navigation shows correct routes; no feature content required yet.
 
 ---
 
-## Phase 4 — Data connection
+## Phase 3 — Feature migration
 
-- **Connect the app to real data** (Supabase and any other backends).
-- Reference: `docs/MIGRATION_ANALYSIS.md` (data flow, API, cache) and `reference/` (shared/api, features’ load/fetch logic).
-- Deliver:
-  - **lib/api/** (and Supabase client usage) implemented for report and, as needed, dashboard/settings.
-  - Server Components or server-side data fetching where appropriate; Client Components + Zustand only where needed.
-  - Report section (and any other sections in scope) reading from Supabase and reflecting real data.
-  - Respect project rules: `client_id` as string, date/workday rules per `31-term-main.mdc`, etc.
+### 3.1 Dashboard
+### 3.2 Reports
+#### 3.2.1 Daily report
+#### 3.2.2 Weekly report
+### 3.3 Goal weekly
+### 3.4 Goal monthly
+### 3.5 Settings
+#### 3.5.1 Goal setting
+#### 3.5.2 Manager setting
 
-**Done when:** Report (and any other prioritized sections) load and display real data; behavior matches reference semantics.
+**Done when:** Each feature’s UI and structure match the reference; data can be static/mock first.
+
+---
+
+## Phase 4 — Shared UI components
+
+### 4.1 Toast / ToastProvider
+### 4.2 Dropdown
+### 4.3 DatePicker
+### 4.4 Tabs
+### 4.5 Table
+### 4.6 Modal (e.g. DataUpdateModal)
+
+**Done when:** Common UI used by features is available under `components/ui/` (or equivalent).
+
+---
+
+## Phase 5 — Data connection
+
+- Connect report, dashboard, goal, and settings to real data (Supabase).
+- Implement `lib/api/` (and hooks) for live data; Server/Client split and Zustand where needed.
+- Respect `client_id` as string, date/workday rules per `31-term-main.mdc`.
+
+**Done when:** Report (and other prioritized sections) load and display real data; behavior matches reference semantics.
 
 ---
 
 ## Workflow
 
-- **Before starting a task:** Check this roadmap and `02-project-migration.mdc`; confirm which phase you are in.
-- **After completing a phase (or a step within it):** Mark progress (e.g. in planning or in this file’s checklist) and proceed to the next step.
-- **When in doubt:** Prefer completing an earlier phase before moving to a later one (0 → 1 → 2 → 3 → 4).
+- **Before starting:** Check this roadmap and `02-project-migration.mdc`; confirm which phase/step you are in.
+- **After completing a step:** Mark progress (e.g. in this file’s checklist or in planning); proceed to the next step.
+- **When in doubt:** Prefer completing an earlier phase before a later one (0 → 1 → 2 → 3 → 4 → 5).
 
 ## Checklist (phases)
 
-- [ ] Phase 0 — Basic project environment
-- [ ] Phase 1 — Sidebar and layout
-- [ ] Phase 2 — Report section appearance
-- [ ] Phase 3 — Shared libraries and utils
-- [ ] Phase 4 — Data connection
+- [x] Phase 0 — Basic project environment
+- [ ] Phase 1 — Shared modules (Foundation)
+- [ ] Phase 2 — Layout and navigation
+- [ ] Phase 3 — Feature migration
+- [ ] Phase 4 — Shared UI components
+- [ ] Phase 5 — Data connection

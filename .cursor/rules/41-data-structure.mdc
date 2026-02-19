@@ -1,5 +1,5 @@
 ---
-description: Database schema definitions, naming conventions, and data handling rules for the dna_kpi project.
+description: Database schema definitions, naming conventions, and data handling rules for the Ads Dashboard project.
 globs: "lib/supabase/**/*", "lib/api/**/*", "types/*.ts", "app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"
 ---
 
@@ -21,15 +21,15 @@ All database columns and related variables must follow these prefixes to ensure 
 
 ## 2. Schema Strategy
 
-- **Project Schema:** Use `dna_kpi` schema for project-specific data.
+- **Project Schema:** Use `ads` schema for project-specific data.
 
-## 3. Core Tables Definition (`dna_kpi` schema)
+## 3. Core Tables Definition (`ads` schema)
 
 ### 3.1 `monthly_kpi` (Merged Target & Actual)
 Stores both monthly targets and accumulated actuals in a single row per category/country/month.
 
 ```sql
-create table dna_kpi.monthly_kpi (
+create table ads.monthly_kpi (
   id bigint generated always as identity primary key,
 
   -- Dimensions (Unique Constraint Combination)
@@ -52,10 +52,10 @@ create table dna_kpi.monthly_kpi (
 
 ### 3.2 Reference Views (from `shared`)
 
-Do not duplicate shared tables. Use views to mirror them into the `dna_kpi` schema for consistent access.
+Do not duplicate shared tables. Use views to mirror them into the `ads` schema for consistent access.
 
-- `dna_kpi.ref_manager` → mirrors `shared.manager`
-- `dna_kpi.ref_week` → mirrors `shared.week`
-- `dna_kpi.ref_holiday` → mirrors `shared.holiday`
+- `ads.ref_manager` → mirrors `shared.manager`
+- `ads.ref_week` → mirrors `shared.week`
+- `ads.ref_holiday` → mirrors `shared.holiday`
 
 **Usage:** These reference views are read-only. Apply any data changes in the original `shared` schema; the views reflect the source tables.

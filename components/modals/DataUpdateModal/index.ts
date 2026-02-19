@@ -1,0 +1,1 @@
+export { DataUpdateModal } from "./DataUpdateModal";

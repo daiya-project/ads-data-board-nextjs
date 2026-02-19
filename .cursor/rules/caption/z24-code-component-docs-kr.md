@@ -1,6 +1,6 @@
 ---
-description: docs/products/ 컴포넌트 문서; Covered files 목록; 해당 파일 수정 시 문서 갱신.
-globs: ["components/**/*.tsx", "app/**/_components/**/*.tsx", "hooks/**/*.ts", "docs/products/*.md"]
+description: _docs/products/ 컴포넌트 문서; Covered files 목록; 해당 파일 수정 시 문서 갱신.
+globs: ["components/**/*.tsx", "app/**/_components/**/*.tsx", "hooks/**/*.ts", "_docs/products/*.md"]
 ---
 
 # 컴포넌트 문서화 규칙
@@ -9,12 +9,12 @@ AI 세션과 개발자가 제품의 **비즈니스 로직**과 **상태 흐름**
 
 ## 1. 문서 위치 및 명명
 
-- **대상 폴더:** `docs/products/`
+- **대상 폴더:** `_docs/products/`
 - **파일명:** `[컴포넌트-kebab-case].md` (예: `KpiTable.tsx` → `kpi-table.md`)
 
 ## 2. 작성·갱신 조건
 
-- **작성:** 비즈니스 로직, 상태 관리, 복잡한 상호작용, Server Action/API 호출, 2곳 이상 재사용이 있을 때 문서를 작성한다. **Covered files**를 포함한다.
+- **작성:** **새로운 파일을 생성할 때**, 해당 파일이 비즈니스 로직, 상태 관리, 복잡한 상호작용, Server Action/API 호출, 2곳 이상 재사용 중 하나에 해당하면 문서를 작성한다. **Covered files**를 포함한다.
 - **갱신(로직 변경):** 기존 컴포넌트/훅을 리팩터링하거나 로직을 크게 바꾸면 문서가 없으면 만들고, 있으면 갱신한다.
 - **갱신(Covered files 수정 시):** **문서의 Covered files에 있는 파일을 수정한 경우** 해당 문서를 **반드시** 갱신한다.
   - **Last updated**를 현재 일시(YYYY-MM-DD HH:mm:ss)로 수정한다.
@@ -54,7 +54,7 @@ AI 세션과 개발자가 제품의 **비즈니스 로직**과 **상태 흐름**
 
 ## 4. 체크리스트
 
-- [ ] 논리·상태가 있는 새 컴포넌트/훅 → `docs/products/[이름-kebab-case].md` 작성 시 **Covered files** 포함?
+- [ ] 논리·상태가 있는 새 컴포넌트/훅 → `_docs/products/[이름-kebab-case].md` 작성 시 **Covered files** 포함?
 - [ ] 문서에 Document info, Revision history, Covered files, Overview, Props & State, Core Logic, AI Guide(State → Action 표) 포함?
 - [ ] **Covered files에 있는 파일을 수정한 뒤** → 해당 문서 갱신(Last updated, Revision history, 본문)?
 - [ ] 로직 변경·리팩터링 시 → 해당 문서 갱신?

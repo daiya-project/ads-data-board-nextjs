@@ -1,5 +1,5 @@
 ---
-description: dna-kpi 프로젝트의 메인 규칙 및 기본 규칙
+description: Ads Dashboard 프로젝트의 메인 규칙 및 기본 규칙
 alwaysApply: true
 ---
 
@@ -41,9 +41,9 @@ lib/
 types/                # 전역 타입 정의
   database.types.ts   # Supabase 자동 생성 (npm run update-types)
   app-db.types.ts     # 앱에서 사용하는 테이블/뷰 re-export
-docs/                 # 제품·기술 문서
+_docs/                # 제품·기술 문서
   products/           # 컴포넌트 문서(24-code-component-docs); 컴포넌트당 .md 하나
-planning/             # 새 컴포넌트·함수·상태·폴더 작성 전 기획문서
+_planning/            # 새 컴포넌트·함수·상태·폴더 작성 전 기획문서
 public/               # 정적 자산
 middleware.ts         # Next.js 미들웨어 (Supabase 세션 갱신)
 ```
@@ -52,7 +52,7 @@ middleware.ts         # Next.js 미들웨어 (Supabase 세션 갱신)
 
 **필수:** **새 컴포넌트, 함수, 상태(스토어), 폴더**를 만들 때는 **즉시 만들지 않는다.** 기획문서 없이 해당 아티팩트를 생성하는 것은 **허용되지 않는다.**
 
-1. **먼저 기획문서를 작성한다.** 새 컴포넌트 파일, 함수, 상태, 폴더를 만들기 전에 반드시 **`planning/`** 폴더 아래에 다음을 포함한 기획문서를 작성한다.
+1. **먼저 기획문서를 작성한다.** 새 컴포넌트 파일, 함수, 상태, 폴더를 만들기 전에 반드시 **`_planning/`** 폴더 아래에 다음을 포함한 기획문서를 작성한다.
    - **폴더 및 경로:** 아티팩트를 둘 위치 (예: `components/common/`, `app/(dashboard)/dashboard/_components/`, `lib/utils/`, `stores/`). 기존 구조와 명명 규칙에 맞게 제안한다.
    - **유형과 목적:** 추가할 대상(컴포넌트 / 함수 / 상태 스토어 / 폴더)과 그 목적.
    - **컴포넌트인 경우:** **Server vs Client**(기본은 Server Component; 훅·이벤트 핸들러·브라우저 API 사용 시에만 Client); **기존 라이브러리 활용**(예: Shadcn/ui, `components/ui/`의 기존 `Button`). 새로운 패턴 도입보다 기존 UI 재사용을 우선한다.
@@ -70,7 +70,7 @@ middleware.ts         # Next.js 미들웨어 (Supabase 세션 갱신)
 - **새 app 라우트 세그먼트(URL)** — 네비게이션, SEO, 기존 링크.
 - **DB 또는 타입 스키마 변경** — 마이그레이션, 데이터 손실 위험, 다운타임.
 
-각 경우 `planning/`에 영향과 배치를 정리하고, 구현 전에 사용자 확인을 받는다.
+각 경우 `_planning/`에 영향과 배치를 정리하고, 구현 전에 사용자 확인을 받는다.
 
 ## Workflow and Roadmap
 

@@ -25,9 +25,7 @@ export type Database = {
       ref_holiday: {
         Row: {
           id: number;
-          holiday_date: string;
           holiday_name: string | null;
-          is_lunar: boolean | null;
           created_at: string | null;
         };
         Insert: never;

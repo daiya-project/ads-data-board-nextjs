@@ -1,5 +1,5 @@
 ---
-description: 마이그레이션 목표 — docs/MIGRATION_ANALYSIS.md 및 reference 소스로 바닐라 TS를 Next.js로 이식
+description: 마이그레이션 목표 — _docs/MIGRATION_ANALYSIS.md 및 _reference 소스로 바닐라 TS를 Next.js로 이식
 alwaysApply: true
 ---
 
@@ -13,7 +13,7 @@ alwaysApply: true
 
 ### 1. 마이그레이션 분석 문서
 
-- **경로:** `docs/MIGRATION_ANALYSIS.md`
+- **경로:** `_docs/MIGRATION_ANALYSIS.md`
 - **용도:** 마이그레이션 작업(새 페이지, 기능, 상태, 데이터 흐름)을 설계하거나 구현하기 **전에** 이 문서를 참고한다. 문서에는 다음이 정리되어 있다:
   - 현재 아키텍처(Feature-Sliced Design, features, shared 모듈).
   - 상태 관리(Feature 로컬 상태, window 전역, 이벤트 버스, 캐시).
@@ -25,11 +25,17 @@ alwaysApply: true
 
 ### 2. 레퍼런스 소스 코드
 
-- **경로:** `reference/` (예: `reference/ts-ads/src/`)
+- **경로:** `_reference/` (예: `_reference/ts-ads/src/`)
 - **용도:** reference 폴더에는 **원본 바닐라 TypeScript 소스**가 있다. 기능·화면을 이식할 때:
   - **해당 reference 코드**(동일 Feature 또는 shared 모듈)를 읽어 비즈니스 로직, 검증, 데이터 형태를 보존한다.
   - 그 로직을 **재사용·적응**하여 Next.js 구조에 맞춘다: 데이터는 `lib/api/`, 비즈니스 로직은 `lib/` 또는 `lib/logic/`, UI는 React 컴포넌트, 필요 시 Zustand로 클라이언트 상태.
   - 무조건 복사하지 말고, 명령형/DOM 기반 코드를 React(컴포넌트, 훅, Server/Client 분리)로 변환하며 프로젝트 룰(예: `00-project-main.mdc`, `01-project-structure-rule.mdc`, `20-code-main.mdc`)을 따른다.
+
+## DB 스키마 (Supabase / Postgres)
+
+- **이 프로젝트의 스키마:** 새 테이블·뷰는 **`ads`** 스키마에 둔다.
+- **`public` 스키마:** 마이그레이션 이전 앱에서 사용하던 스키마이다. `public`에 있는 테이블은 **레거시 또는 레퍼런스**이며, 이번 프로젝트에서는 `ads`(및 필요 시 `shared`)에 새 테이블을 만든다. `public` 스키마를 바라보는 코드는 레거시이거나 레퍼런스 전용으로 본다.
+- **사용 스키마:** 이 프로젝트에서는 **`ads`**와 **`shared`** 스키마만 사용한다. 새 마이그레이션과 애플리케이션 코드는 `ads.*`, `shared.*`만 참조하고 `public.*`는 참조하지 않는다.
 
 ## 원칙
 
@@ -39,7 +45,7 @@ alwaysApply: true
 
 ## 체크리스트
 
-- [ ] 이식 대상 영역에 대해 `docs/MIGRATION_ANALYSIS.md`를 확인했는가?
-- [ ] 구현 시 동일 Feature/모듈의 `reference/` 소스를 참고했는가?
+- [ ] 이식 대상 영역에 대해 `_docs/MIGRATION_ANALYSIS.md`를 확인했는가?
+- [ ] 구현 시 동일 Feature/모듈의 `_reference/` 소스를 참고했는가?
 - [ ] 바닐라 패턴을 그대로 복사하지 않고 Next.js/React 패턴(Server/Client, lib/api, 컴포넌트)으로 적응했는가?
 - [ ] 원본 앱의 동작·데이터 의미를 유지했는가?

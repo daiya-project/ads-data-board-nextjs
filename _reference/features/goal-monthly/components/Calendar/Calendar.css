@@ -1,0 +1,442 @@
+/* ═══════════════════════════════════════════════════════════════
+   Calendar Component Styles (Goal Monthly) — BEM: Calendar__*
+   ═══════════════════════════════════════════════════════════════ */
+
+.Calendar__root {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(28px) saturate(130%);
+    -webkit-backdrop-filter: blur(28px) saturate(130%);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow:
+        0 12px 40px -8px rgba(0, 0, 0, 0.07),
+        0 4px 12px -2px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.Calendar__monthHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 0 22px 0;
+}
+
+.Calendar__monthTitle {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+    letter-spacing: -0.03em;
+    min-width: 150px;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(74, 144, 226, 0.08);
+}
+
+.Calendar__monthNav {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #64748b;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.Calendar__monthNav:hover {
+    background: rgba(74, 144, 226, 0.1);
+    border-color: rgba(74, 144, 226, 0.35);
+    color: #4A90E2;
+    box-shadow: 0 4px 16px rgba(74, 144, 226, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.Calendar__monthNav:active {
+    transform: scale(0.95);
+}
+
+.Calendar__headerRow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 2px;
+    text-align: center;
+}
+
+.Calendar__headerDay {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    padding: 8px 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.Calendar__headerDay.is-weekend {
+    color: #E25C5C;
+}
+
+.Calendar__weekBlock {
+    border-top: 1px solid rgba(226, 232, 240, 0.5);
+    padding-bottom: 2px;
+}
+
+.Calendar__weekBlock:last-child {
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.Calendar__dayGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    padding: 8px 0 4px 0;
+}
+
+.Calendar__dayCell {
+    text-align: center;
+    padding: 10px 4px 14px 4px;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.Calendar__dayCell:hover {
+    background: rgba(74, 144, 226, 0.04);
+    border-color: rgba(74, 144, 226, 0.12);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.06);
+}
+
+.Calendar__dayNumber {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.Calendar__dayCell.is-other-month .Calendar__dayNumber {
+    color: #cbd5e1;
+}
+
+.Calendar__dayCell.is-weekend:not(.is-other-month) .Calendar__dayNumber {
+    color: #E25C5C;
+}
+
+.Calendar__dayCell.is-holiday:not(.is-other-month) .Calendar__dayNumber {
+    color: #E25C5C;
+}
+
+.Calendar__dayAmount {
+    font-size: 12px;
+    font-weight: 600;
+    font-family: var(--font-data);
+    color: #334155;
+    font-variant-numeric: tabular-nums;
+    margin-top: auto;
+}
+
+.Calendar__dayAmount.amt-very-low  { color: #2563EB; }
+.Calendar__dayAmount.amt-low       { color: #4A90E2; }
+.Calendar__dayAmount.amt-high      { color: #E25C5C; }
+.Calendar__dayAmount.amt-very-high { color: #C53030; }
+
+.Calendar__dayCell.no-data .Calendar__dayAmount {
+    color: #D1D5DB;
+    font-weight: 400;
+}
+
+.Calendar__dayCell.is-future {
+    opacity: 0.3;
+}
+
+.Calendar__dayCell.is-future .Calendar__dayAmount {
+    visibility: hidden;
+}
+
+.Calendar__dayCell.is-other-month {
+    opacity: 0.35;
+}
+
+.Calendar__dayCell.is-latest-data {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(74, 144, 226, 0.25);
+    box-shadow:
+        0 4px 16px rgba(74, 144, 226, 0.10),
+        0 1px 4px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+    padding-bottom: 14px;
+}
+
+.Calendar__dayCell.is-latest-data .Calendar__dayNumber {
+    color: #4A90E2;
+    font-weight: 800;
+}
+
+.Calendar__progressBar {
+    padding: 14px 0 6px 0;
+}
+
+.Calendar__progressTrack {
+    position: relative;
+    width: 100%;
+    height: 38px;
+    background: rgba(241, 245, 249, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 999px;
+    overflow: visible;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.Calendar__progressBar .Calendar__progressFill {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: calc(100% - 4px);
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: calc(100% - 4px);
+}
+
+.Calendar__progressFill.rate-low {
+    background: linear-gradient(90deg, rgba(147, 197, 253, 0.55), rgba(96, 165, 250, 0.50));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.Calendar__progressFill.rate-mid {
+    background: linear-gradient(90deg, rgba(254, 215, 215, 0.55), rgba(254, 186, 186, 0.55));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.Calendar__progressFill.rate-high {
+    background: linear-gradient(90deg, rgba(252, 165, 165, 0.60), rgba(248, 130, 130, 0.60));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.Calendar__progressFill.rate-over {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.55), rgba(220, 50, 50, 0.65));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.Calendar__progressText {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px;
+    font-family: var(--font-data);
+    color: #475569;
+    gap: 6px;
+    z-index: 1;
+    white-space: nowrap;
+    padding: 0 20px;
+    letter-spacing: -0.01em;
+}
+
+.Calendar__progressText strong {
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.Calendar__progressRate {
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+.Calendar__progressRate.rate-low  { color: #4A90E2; }
+.Calendar__progressRate.rate-mid  { color: #E87C7C; }
+.Calendar__progressRate.rate-high { color: #E25C5C; }
+.Calendar__progressRate.rate-over { color: #C53030; }
+
+.Calendar__progressPrevMarker {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 1.5px;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(100, 116, 139, 0.5) 0px,
+        rgba(100, 116, 139, 0.5) 3px,
+        transparent 3px,
+        transparent 6px
+    );
+    transform: translateX(-50%);
+    z-index: 3;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 20%, rgba(0,0,0,0.7) 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 20%, rgba(0,0,0,0.7) 80%, transparent 100%);
+}
+
+.Calendar__progressPrevMarker::before {
+    content: attr(data-label);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: 700;
+    font-family: var(--font-data);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #64748b;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 999px;
+    padding: 2px 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.Calendar__progressPrevMarker::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(100, 116, 139, 0.45);
+}
+
+.Calendar__progressNoGoal {
+    text-align: center;
+    padding: 10px 0 4px 0;
+    font-size: 12px;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* ─── Month Selector: Glass Pill ─── */
+.goal-monthly-month-pill {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(12px) saturate(130%);
+    -webkit-backdrop-filter: blur(12px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    padding: 4px 6px;
+    box-shadow:
+        0 4px 16px -2px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.25s ease;
+}
+
+.goal-monthly-month-pill:hover {
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow:
+        0 6px 20px -2px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.goal-monthly-month-pill-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: rgba(255, 255, 255, 0.4);
+    color: var(--text-sub);
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.goal-monthly-month-pill-btn:hover {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(79, 70, 229, 0.25);
+    transform: scale(1.08);
+}
+
+.goal-monthly-month-pill-btn:active {
+    transform: scale(0.95);
+}
+
+.goal-monthly-month-pill-display {
+    min-width: 100px;
+    text-align: center;
+    font-family: var(--font-data);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+}
+
+.goal-monthly-month-pill-display:hover {
+    background: rgba(79, 70, 229, 0.06);
+    color: var(--primary);
+}
+
+/* 월 변경 애니메이션 */
+.goal-monthly-month-pill-display.slide-up {
+    animation: monthSlideUp 0.25s ease-out;
+}
+
+.goal-monthly-month-pill-display.slide-down {
+    animation: monthSlideDown 0.25s ease-out;
+}
+
+@keyframes monthSlideUp {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes monthSlideDown {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ Goal Monthly — 콘텐츠 영역 (BEM) ═══ */
+.GoalMonthly__content {
+    min-height: 200px;
+}
+
+/* ═══ Goal Monthly — 차트 섹션 (BEM) ═══ */
+.GoalMonthly__chartSection {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--glass-shadow);
+    border: var(--glass-border);
+    margin-bottom: 24px;
+}

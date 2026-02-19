@@ -1,0 +1,1 @@
+export { loadManagerTabs } from './ManagerTabs';

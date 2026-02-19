@@ -1,0 +1,469 @@
+/* ═══════════════════════════════════════════════════════════════
+   Outbound Section — BEM: OutboundSection__*
+   ═══════════════════════════════════════════════════════════════ */
+
+.OutboundSection__root {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-top: 32px;
+    box-shadow: var(--glass-shadow);
+}
+
+.OutboundSection__titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.OutboundSection__sectionTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.OutboundSection__sectionTitle i {
+    color: var(--primary);
+}
+
+.OutboundSection__chartToggle {
+    display: inline-flex;
+    background: var(--toggle-pill-bg);
+    border: var(--toggle-pill-border);
+    border-radius: var(--toggle-pill-radius);
+    padding: 3px;
+    gap: 2px;
+}
+
+.OutboundSection__toggleBtn {
+    padding: 6px 14px;
+    border: none;
+    background: transparent;
+    color: var(--toggle-pill-inactive-color);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--toggle-pill-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.OutboundSection__toggleBtn:hover {
+    color: var(--text-main);
+}
+
+.OutboundSection__toggleBtn.active {
+    background: var(--toggle-pill-active-bg);
+    color: var(--toggle-pill-active-color);
+    box-shadow: var(--toggle-pill-active-shadow);
+}
+
+.OutboundSection__cumulativeWrapper {
+    position: relative;
+    height: 280px;
+}
+
+.OutboundSection__cardsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.OutboundSection__monthlyCard {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.OutboundSection__monthlyCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    border-color: rgba(99, 102, 241, 0.3);
+    background: rgba(255, 255, 255, 0.75);
+}
+
+.OutboundSection__cardMonth {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.OutboundSection__cardRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.OutboundSection__cardLabel {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-sub);
+}
+
+.OutboundSection__cardValue {
+    font-family: var(--font-data);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    text-align: right;
+}
+
+.OutboundSection__cardUnit {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-sub);
+    margin-left: 2px;
+}
+
+/* Setting Button (table cell) */
+.outbound-setting-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.outbound-setting-btn:hover {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.outbound-setting-btn i {
+    font-size: 14px;
+}
+
+.outbound-setting-btn--active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.outbound-setting-btn--active:hover {
+    background: var(--primary-hover);
+    color: white;
+}
+
+/* ═══ Outbound Setting Modal (Date Picker) ═══ */
+.outbound-setting-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(6px) saturate(140%);
+    -webkit-backdrop-filter: blur(6px) saturate(140%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+}
+
+.outbound-setting-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.outbound-setting-content {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(28px) saturate(130%);
+    -webkit-backdrop-filter: blur(28px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    border-radius: var(--radius-lg, 16px);
+    box-shadow:
+        var(--shadow-lg, 0 20px 60px rgba(0, 0, 0, 0.10)),
+        0 1px 3px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    width: min(380px, 90vw);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(16px) scale(0.96);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.outbound-setting-overlay.active .outbound-setting-content {
+    transform: translateY(0) scale(1);
+}
+
+.outbound-setting-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.45);
+}
+
+.outbound-setting-title {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main, #1F2937);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.outbound-setting-subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted, #9CA3AF);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.outbound-setting-body {
+    padding: 16px 24px;
+}
+
+.outbound-setting-guide {
+    text-align: center;
+    color: var(--text-sub, #6B7280);
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 16px;
+}
+
+.outbound-setting-dates {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.outbound-setting-date-item {
+    font-family: var(--font-data);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main, #1F2937);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.outbound-setting-date-item:hover {
+    background: rgba(79, 70, 229, 0.06);
+}
+
+.outbound-setting-date-item.active {
+    border-color: #4F46E5;
+    background: rgba(79, 70, 229, 0.08);
+    color: #4F46E5;
+}
+
+.outbound-setting-date-separator {
+    color: var(--text-muted, #9CA3AF);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.outbound-setting-calendar {
+    margin-top: 4px;
+}
+
+.outbound-cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.outbound-cal-nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-sub, #6B7280);
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background 0.12s ease;
+    line-height: 1;
+}
+
+.outbound-cal-nav-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.outbound-cal-month-label {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main, #1F2937);
+    letter-spacing: -0.01em;
+}
+
+.outbound-cal-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.outbound-cal-table th {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted, #9CA3AF);
+    text-align: center;
+    padding: 4px 0 8px;
+}
+
+.outbound-cal-table td {
+    text-align: center;
+    padding: 2px;
+}
+
+.outbound-cal-day {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    font-family: var(--font-data);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-main, #374151);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.12s ease;
+}
+
+.outbound-cal-day:hover {
+    background: rgba(79, 70, 229, 0.1);
+}
+
+.outbound-cal-day--start,
+.outbound-cal-day--end {
+    background: #4F46E5;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.outbound-cal-day--start:hover,
+.outbound-cal-day--end:hover {
+    background: #4338CA;
+}
+
+.outbound-cal-day--range {
+    background: rgba(79, 70, 229, 0.08);
+    border-radius: 4px;
+}
+
+.outbound-cal-day--sat {
+    color: #4A90E2;
+}
+
+.outbound-cal-day--sun {
+    color: #EF4444;
+}
+
+.outbound-setting-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 24px 20px;
+    justify-content: flex-end;
+}
+
+.outbound-setting-action-btn {
+    padding: 8px 18px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.outbound-setting-action-btn--primary {
+    background: #4F46E5;
+    color: #fff;
+}
+
+.outbound-setting-action-btn--primary:hover {
+    background: #4338CA;
+}
+
+.outbound-setting-action-btn--close {
+    background: rgba(226, 232, 240, 0.5);
+    color: var(--text-sub, #6B7280);
+}
+
+.outbound-setting-action-btn--close:hover {
+    background: rgba(226, 232, 240, 0.8);
+}
+
+.outbound-setting-action-btn--danger {
+    background: rgba(239, 68, 68, 0.08);
+    color: #EF4444;
+}
+
+.outbound-setting-action-btn--danger:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* Empty State */
+.outbound-empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+}
+
+.outbound-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.outbound-empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+}
+
+.outbound-empty-description {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .OutboundSection__cardsRow {
+        grid-template-columns: 1fr;
+    }
+    
+    .OutboundSection__titleRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}

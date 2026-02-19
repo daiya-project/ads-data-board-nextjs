@@ -1,0 +1,8 @@
+# Supabase 로컬 개발 설정
+# 전체 옵션: https://supabase.com/docs/guides/local-development/cli/config
+
+[api]
+enabled = true
+# API에 노출할 스키마. 이 프로젝트는 ads, shared 사용.
+schemas = ["public", "ads", "shared"]
+# 기본값: ["public", "graphql_public"]

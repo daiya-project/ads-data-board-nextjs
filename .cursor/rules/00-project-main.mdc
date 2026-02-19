@@ -1,5 +1,5 @@
 ---
-description: Main project rules and conventions for dna-kpi
+description: Main project rules and conventions for Ads Dashboard
 alwaysApply: true
 ---
 
@@ -41,9 +41,9 @@ lib/
 types/                # Global type definitions
   database.types.ts   # Supabase auto-generated (npm run update-types)
   app-db.types.ts     # App-level re-exports of used tables/views
-docs/                 # Product and technical documentation
+_docs/                # Product and technical documentation
   products/           # Component docs (per 24-code-component-docs); one .md per component
-planning/             # Planning documents before new components, functions, state, folders
+_planning/            # Planning documents before new components, functions, state, folders
 public/               # Static assets
 middleware.ts         # Next.js middleware (Supabase session refresh)
 ```
@@ -52,7 +52,7 @@ middleware.ts         # Next.js middleware (Supabase session refresh)
 
 **MANDATORY:** When creating a **new component, function, state (store), or folder**, **do not create it immediately.** Creating such artifacts without a prior planning document is **not allowed.**
 
-1. **Write a planning document first.** Before creating any new component file, function, state, or folder, you **must** add a planning document under the **`planning/`** folder that includes:
+1. **Write a planning document first.** Before creating any new component file, function, state, or folder, you **must** add a planning document under the **`_planning/`** folder that includes:
    - **Folder and path:** Where the artifact will live (e.g. `components/common/`, `app/(dashboard)/dashboard/_components/`, `lib/utils/`, `stores/`), consistent with existing structure and naming.
    - **Type and purpose:** What is being added (component / function / state store / folder) and its purpose.
    - **For components:** **Server vs Client** (Server Component by default; Client only if it uses hooks, event handlers, or browser APIs); **reuse of existing libraries** (e.g. Shadcn/ui, existing `Button` from `components/ui/`). Prefer reusing existing UI over introducing new patterns.
@@ -70,7 +70,7 @@ middleware.ts         # Next.js middleware (Supabase session refresh)
 - **New app route segments (URLs)** — navigation, SEO, and existing links.
 - **Database or type schema changes** — migrations, data loss risk, and downtime.
 
-In each case, document impact and placement in `planning/` and get user confirmation before implementing.
+In each case, document impact and placement in `_planning/` and get user confirmation before implementing.
 
 ## Workflow and Roadmap
 

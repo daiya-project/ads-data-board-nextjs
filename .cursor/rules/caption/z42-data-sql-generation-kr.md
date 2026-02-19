@@ -22,7 +22,7 @@ WHERE is_holiday = false;
 스크립트 끝에 `COMMENT ON TABLE` / `COMMENT ON VIEW` / `COMMENT ON FUNCTION`을 붙여 **비즈니스 목적**을 설명한다.
 
 ```sql
-COMMENT ON TABLE dna_kpi.monthly_kpi IS 'Wide KPI 테이블: (month, country, type)당 1행. 목표/실적 및 카테고리별 컬럼.';
+COMMENT ON TABLE ads.monthly_kpi IS 'Wide KPI 테이블: (month, country, type)당 1행. 목표/실적 및 카테고리별 컬럼.';
 COMMENT ON VIEW my_schema.revenue_ytd IS '연간 누적 매출(클라이언트별). 대시보드 카드용.';
 ```
 
@@ -31,7 +31,7 @@ COMMENT ON VIEW my_schema.revenue_ytd IS '연간 누적 매출(클라이언트�
 **파생/계산/메트릭** 컬럼에는 `COMMENT ON COLUMN`을 붙이고, **단위**(%, KRW 등)와 **계산식**을 명시한다.
 
 ```sql
-COMMENT ON COLUMN dna_kpi.monthly_kpi.mf_rate_pct IS '목표 비율 0–100(%). monthly_mf = monthly_pub * (mf_rate_pct/100) 로 사용.';
+COMMENT ON COLUMN ads.monthly_kpi.mf_rate_pct IS '목표 비율 0–100(%). monthly_mf = monthly_pub * (mf_rate_pct/100) 로 사용.';
 COMMENT ON COLUMN my_view.achievement_rate IS '파생: target > 0 일 때 actual_monthly / target_monthly; 단위: 비율(표시 시 %).';
 ```
 

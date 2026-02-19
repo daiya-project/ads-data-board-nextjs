@@ -1,5 +1,5 @@
 ---
-description: Migration goal — vanilla TS to Next.js using docs/MIGRATION_ANALYSIS.md and reference source
+description: Migration goal — vanilla TS to Next.js using _docs/MIGRATION_ANALYSIS.md and _reference source
 alwaysApply: true
 ---
 
@@ -13,7 +13,7 @@ This project aims to **migrate the existing vanilla TypeScript application to Ne
 
 ### 1. Migration analysis document
 
-- **Path:** `docs/MIGRATION_ANALYSIS.md`
+- **Path:** `_docs/MIGRATION_ANALYSIS.md`
 - **Use:** Before designing or implementing migration work (new pages, features, state, or data flow), consult this document. It describes:
   - Current architecture (Feature-Sliced Design, features, shared modules).
   - State management (feature-local state, window globals, event bus, cache).
@@ -25,11 +25,17 @@ Use the analysis to keep behavior and domain boundaries aligned with the origina
 
 ### 2. Reference source code
 
-- **Path:** `reference/` (e.g. `reference/ts-ads/src/`)
+- **Path:** `_reference/` (e.g. `_reference/ts-ads/src/`)
 - **Use:** The reference folder contains the **original vanilla TypeScript source**. When implementing a migrated feature or screen:
   - **Read the corresponding reference code** (same feature or shared module) to preserve business logic, validation, and data shapes.
   - **Reuse and adapt** that logic into the Next.js structure: `lib/api/` for data, `lib/` or `lib/logic/` for business logic, React components for UI, Zustand for client state where appropriate.
   - Do not copy-paste blindly; convert imperative/DOM-based code to React (components, hooks, Server/Client split) and follow project rules (e.g. `00-project-main.mdc`, `01-project-structure-rule.mdc`, `20-code-main.mdc`).
+
+## Database schema (Supabase / Postgres)
+
+- **This project’s schema:** New tables and views belong to the **`ads`** schema.
+- **`public` schema:** Used by the pre-migration app. Tables in `public` are **legacy or reference**; in this project we are building new tables in `ads` (and using `shared` where applicable). Any code that targets the `public` schema is legacy or reference-only.
+- **Schemas in use:** This project uses **only** the **`ads`** and **`shared`** schemas. New migrations and application code should reference `ads.*` and `shared.*` only, not `public.*`.
 
 ## Principles
 
@@ -39,7 +45,7 @@ Use the analysis to keep behavior and domain boundaries aligned with the origina
 
 ## Checklist
 
-- [ ] Checked `docs/MIGRATION_ANALYSIS.md` for the area being migrated?
-- [ ] Used `reference/` source for the same feature or module when implementing?
+- [ ] Checked `_docs/MIGRATION_ANALYSIS.md` for the area being migrated?
+- [ ] Used `_reference/` source for the same feature or module when implementing?
 - [ ] Adapted logic to Next.js/React patterns (Server/Client, lib/api, components) instead of copying vanilla patterns?
 - [ ] Preserved behavior and data semantics from the original app?

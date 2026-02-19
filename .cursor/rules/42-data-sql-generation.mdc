@@ -22,7 +22,7 @@ WHERE is_holiday = false;
 Always append `COMMENT ON TABLE` / `COMMENT ON VIEW` / `COMMENT ON FUNCTION` at the end of the script to explain its **business purpose**.
 
 ```sql
-COMMENT ON TABLE dna_kpi.monthly_kpi IS 'Wide KPI table: one row per (month, country, type). Target/actual and category columns.';
+COMMENT ON TABLE ads.monthly_kpi IS 'Wide KPI table: one row per (month, country, type). Target/actual and category columns.';
 COMMENT ON VIEW my_schema.revenue_ytd IS 'Year-to-date revenue by client; used for dashboard cards.';
 ```
 
@@ -31,7 +31,7 @@ COMMENT ON VIEW my_schema.revenue_ytd IS 'Year-to-date revenue by client; used f
 Append `COMMENT ON COLUMN` for all **derived**, **calculated**, or **metric-based** columns. Strictly specify **units** (e.g. `%`, KRW) and **formulas** where applicable.
 
 ```sql
-COMMENT ON COLUMN dna_kpi.monthly_kpi.mf_rate_pct IS 'Target rate 0–100 (%). Used as monthly_mf = monthly_pub * (mf_rate_pct/100).';
+COMMENT ON COLUMN ads.monthly_kpi.mf_rate_pct IS 'Target rate 0–100 (%). Used as monthly_mf = monthly_pub * (mf_rate_pct/100).';
 COMMENT ON COLUMN my_view.achievement_rate IS 'Derived: actual_monthly / target_monthly when target > 0; unit: ratio (display as %).';
 ```
 

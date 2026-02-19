@@ -1,0 +1,308 @@
+/* ═══════════════════════════════════════════════════════════════
+   Weekly Goal Navigation — BEM: WeekNavigation__*
+   ═══════════════════════════════════════════════════════════════ */
+
+.WeekNavigation__layout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+
+.WeekNavigation__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 24px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow);
+}
+
+.WeekNavigation__btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 18px;
+    color: var(--text-sub);
+}
+
+.WeekNavigation__btn:hover:not(:disabled) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: scale(1.05);
+}
+
+.WeekNavigation__btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.WeekNavigation__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 200px;
+}
+
+.WeekNavigation__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.WeekNavigation__range {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.WeekNavigation__current {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.WeekNavigation__categorySection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.WeekNavigation__categorySectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.WeekNavigation__categorySectionTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.WeekNavigation__categorySectionTitle .WeekNavigation__categoryBadge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.WeekNavigation__categorySectionCount {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.WeekNavigation__categorySectionCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.WeekNavigation__rangeDisplay {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.WeekNavigation__rangeDisplay i {
+    color: var(--primary);
+}
+
+.WeekNavigation__selector {
+    position: relative;
+}
+
+.WeekNavigation__selectorTrigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.WeekNavigation__selectorTrigger:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.WeekNavigation__selectorTrigger i {
+    transition: transform 0.2s;
+}
+
+.WeekNavigation__selector.open .WeekNavigation__selectorTrigger i {
+    transform: rotate(180deg);
+}
+
+.WeekNavigation__selectorDropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 240px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    padding: 8px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.WeekNavigation__selector.open .WeekNavigation__selectorDropdown {
+    opacity: 1;
+    visibility: visible;
+}
+
+.WeekNavigation__selectorOption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.WeekNavigation__selectorOption:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.WeekNavigation__selectorOption.active {
+    background: var(--primary-light);
+}
+
+.WeekNavigation__selectorOptionLabel {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.WeekNavigation__selectorOptionRange {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.WeekNavigation__selectorOption.current .WeekNavigation__selectorOptionLabel::after {
+    content: ' (이번 주)';
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.WeekNavigation__cardSlot {
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    flex-shrink: 0;
+}
+
+.WeekNavigation__cardSlot--33pct {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.WeekNavigation__cardSlot--66pct {
+    flex: 2 1 0;
+    min-width: 0;
+}
+
+.WeekNavigation__cardSlot .WeekHeader__root,
+.WeekNavigation__cardSlot .WeekHeader__rootNew {
+    margin-bottom: 16px;
+}
+
+.WeekNavigation__cardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.WeekNavigation__cardContainer .GoalCard__root,
+.WeekNavigation__cardContainer .GoalCard__root--currentWeek {
+    width: 100%;
+    max-width: none;
+}
+
+.WeekNavigation__categoryContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 4px;
+}
+
+@media (max-width: 1200px) {
+    .WeekNavigation__layout {
+        flex-direction: column;
+    }
+
+    .WeekNavigation__cardSlot--33pct,
+    .WeekNavigation__cardSlot--66pct {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .WeekNavigation__nav {
+        padding: 12px 16px;
+    }
+
+    .WeekNavigation__btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .WeekNavigation__info {
+        min-width: 160px;
+    }
+
+    .WeekNavigation__categorySectionCards {
+        grid-template-columns: 1fr;
+    }
+}

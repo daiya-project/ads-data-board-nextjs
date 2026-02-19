@@ -5,3 +5,5 @@
  * Do NOT import from subpaths like "@/lib/utils/cn" directly.
  */
 export { cn } from "@/lib/utils/cn";
+export { cleanClientName } from "@/lib/utils/string-utils";
+export { normalizeDate } from "@/lib/utils/date-utils";

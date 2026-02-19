@@ -759,7 +759,7 @@ ads-data-board/
 │       ├── 31-term-main.mdc
 │       └── 40-data-main-rule.mdc
 │
-├── docs/                                   # 문서
+├── _docs/                                  # 문서
 │   └── MIGRATION_ANALYSIS.md
 │
 ├── index.html                              # HTML 진입점
@@ -981,7 +981,7 @@ ads-data-board/
 ├── .cursor/                                # Cursor 설정 (유지)
 │   └── rules/
 │
-├── docs/                                   # 문서 (유지)
+├── _docs/                                  # 문서 (유지)
 │   └── MIGRATION_ANALYSIS.md
 │
 ├── .env.local                              # 환경 변수 (로컬)
@@ -3880,7 +3880,7 @@ src/shared/ui/common/Dropdown/       →  src/components/ui/Dropdown/
 src/shared/ui/common/DatePicker/     →  src/components/ui/DatePicker/
 src/shared/ui/common/Tabs/           →  src/components/ui/Tabs/
 src/shared/ui/common/Table/          →  src/components/ui/Table/
-src/shared/ui/modals/                →  src/components/ui/Modal/
+src/shared/ui/modals/                →  src/components/modals/   # 공통 모달 (DataUpdateModal 등). 구조 규칙: components/modals/ = 여러 기능에서 쓰는 모달
 ```
 
 ### 9.7 삭제 대상 파일/폴더
@@ -3968,7 +3968,7 @@ src/shared/ui/modals/                →  src/components/ui/Modal/
 | `src/shared/ui/common/DatePicker/index.ts` | `src/components/ui/DatePicker/DatePicker.tsx` | Class Component → React Client Component | 날짜 상태: `useState`<br/>이벤트: `onChange` prop<br/>외부 라이브러리 고려 (react-datepicker 등) |
 | `src/shared/ui/common/Tabs/Tabs.ts` | `src/components/ui/Tabs/Tabs.tsx` | Class Component → React Client Component | 활성 탭 상태: `useState`<br/>탭 전환: `onClick` + 상태 업데이트 |
 | `src/shared/ui/common/Table/Table.ts` | `src/components/ui/Table/Table.tsx` | Class Component → React Client Component | 테이블 데이터: Props로 전달<br/>정렬/필터: `useState` + 로직 분리 |
-| `src/shared/ui/modals/DataUpdateModal/index.ts` | `src/components/ui/Modal/DataUpdateModal.tsx` | Class Component → React Client Component | 모달 상태: `useState` 또는 Zustand<br/>Portal 사용<br/>Backdrop 클릭 처리 |
+| `src/shared/ui/modals/DataUpdateModal/index.ts` | `src/components/modals/DataUpdateModal/DataUpdateModal.tsx` | Class Component → React Client Component | 모달 상태: `useState` 또는 Zustand<br/>Portal 사용<br/>Backdrop 클릭 처리. 구조 규칙: 여러 기능에서 쓰는 모달은 `components/modals/` |
 
 ### 10.7 Dashboard Feature
 
@@ -4119,7 +4119,7 @@ Next.js 환경에서 재사용 가능한 React 컴포넌트로 전환할 수 있
 
 | 컴포넌트명 | 현재 구현 | TO-BE 경로 | 설계 방향 | 우선순위 |
 |-----------|----------|-----------|----------|---------|
-| **Modal** | `DataUpdateModal`, `GoalRegisterModal` 등 | `src/components/ui/Modal/Modal.tsx` | **Client Component**, Portal 사용, title/body/footer slot, onClose callback, backdrop 클릭 처리, ESC 키 지원 | 🔴 HIGH |
+| **Modal** | `DataUpdateModal`, `GoalRegisterModal` 등 | 공통 래퍼: Shadcn `components/ui/dialog` 또는 `components/common/Modal/`<br/>**앱 공통 모달**(DataUpdateModal 등): `components/modals/` (예: `components/modals/DataUpdateModal/`) | **Client Component**, Portal 사용, title/body/footer slot, onClose callback, backdrop 클릭 처리, ESC 키 지원. 구조 규칙: 여러 기능에서 쓰는 모달은 `components/modals/` | 🔴 HIGH |
 | **Toast** | `showToast()` (ui-helpers.ts) | `src/components/ui/Toast/Toast.tsx` + `ToastProvider.tsx` | **Client Component**, Context API로 전역 관리, position, duration, type (success, error, info), auto-dismiss, 다중 토스트 스택 | 🔴 HIGH |
 | **Dropdown** | Sidebar 메뉴, 설정 | `src/components/ui/Dropdown/Dropdown.tsx` | **Client Component**, trigger/content pattern, auto-positioning, outside click 처리, 키보드 네비게이션 | 🟡 MEDIUM |
 | **DatePicker** | `src/shared/ui/common/DatePicker/` | `src/components/ui/DatePicker/DatePicker.tsx` | **Client Component**, 달력 그리드, 월/년 네비게이션, 오늘 버튼, range 선택(선택적), 외부 라이브러리 고려 (react-datepicker) | 🔴 HIGH |

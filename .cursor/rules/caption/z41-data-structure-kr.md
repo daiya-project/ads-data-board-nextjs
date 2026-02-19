@@ -1,5 +1,5 @@
 ---
-description: dna_kpi 프로젝트의 DB 스키마 정의, 네이밍 규칙, 데이터 처리 규칙
+description: Ads Dashboard 프로젝트의 DB 스키마 정의, 네이밍 규칙, 데이터 처리 규칙
 globs: "lib/supabase/**/*", "lib/api/**/*", "types/*.ts", "app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}"
 ---
 
@@ -21,15 +21,15 @@ DB 컬럼 및 관련 변수는 가독성과 자동완성 그룹화를 위해 아
 
 ## 2. 스키마 전략
 
-- **프로젝트 스키마:** 프로젝트 전용 데이터는 `dna_kpi` 스키마를 사용한다.
+- **프로젝트 스키마:** 프로젝트 전용 데이터는 `ads` 스키마를 사용한다.
 
-## 3. 핵심 테이블 정의 (`dna_kpi` 스키마)
+## 3. 핵심 테이블 정의 (`ads` 스키마)
 
 ### 3.1 `monthly_kpi` (목표·실적 통합)
 카테고리/국가/월당 한 행으로 월별 목표와 누적 실적을 함께 저장한다.
 
 ```sql
-create table dna_kpi.monthly_kpi (
+create table ads.monthly_kpi (
   id bigint generated always as identity primary key,
 
   -- 차원 (유일 제약 조합)
@@ -52,10 +52,10 @@ create table dna_kpi.monthly_kpi (
 
 ### 3.2 참조 뷰 (`shared` 기반)
 
-`shared` 테이블을 복제하지 말고, `dna_kpi` 스키마에서 동일하게 접근할 수 있도록 뷰로 반영한다.
+`shared` 테이블을 복제하지 말고, `ads` 스키마에서 동일하게 접근할 수 있도록 뷰로 반영한다.
 
-- `dna_kpi.ref_manager` → `shared.manager` 반영
-- `dna_kpi.ref_week` → `shared.week` 반영
-- `dna_kpi.ref_holiday` → `shared.holiday` 반영
+- `ads.ref_manager` → `shared.manager` 반영
+- `ads.ref_week` → `shared.week` 반영
+- `ads.ref_holiday` → `shared.holiday` 반영
 
 **사용:** 해당 참조 뷰는 읽기 전용으로 사용하며, 수정은 원본 스키마(`shared`)에서 수행한다.

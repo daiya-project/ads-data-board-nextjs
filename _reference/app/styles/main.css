@@ -1,0 +1,20 @@
+/* ═══════════════════════════════════════════════════════════════
+   ads-data-board — Global Styles Only (Phase 8)
+   Tokens, Base, Utils. Component CSS lives in component folders.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 1. Design Tokens */
+@import './tokens/typography.css';
+@import './tokens/colors.css';
+@import './tokens/spacing.css';
+@import './tokens/shadows.css';
+
+/* 2. Base Styles */
+@import './base/reset.css';
+@import './base/typography.css';
+@import './base/layout.css';
+@import './base/utilities.css';
+@import './base/buttons.css';
+
+/* 3. Utils (shared utilities, e.g. chart tooltip) */
+@import './utils/tooltip.css';
