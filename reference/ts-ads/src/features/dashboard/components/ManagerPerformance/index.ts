@@ -1,1 +1,0 @@
-export { ManagerPerformance } from './ManagerPerformance';

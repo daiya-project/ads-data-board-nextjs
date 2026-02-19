@@ -1,4 +1,0 @@
-/* AppShell: 레이아웃은 base/layout.css 사용. 필요 시 셸 전용 스타일 추가. */
-.sidebar-mount {
-  flex-shrink: 0;
-}

@@ -1,9 +1,0 @@
-/* ═══════════════════════════════════════════════════════════════
-   Typography Token System
-   ═══════════════════════════════════════════════════════════════ */
-
-:root {
-    /* ── Typography ─────────────────────────────────────────── */
-    --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-    --font-data: 'Roboto Mono', 'SF Mono', 'Fira Code', monospace;
-}

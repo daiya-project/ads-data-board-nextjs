@@ -1,8 +1,0 @@
-/* Reports page scope — font override (from _backup reports.css) */
-#sales-report-page {
-  font-family: 'Roboto Mono', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, monospace;
-}
-
-#sales-report-page * {
-  font-family: inherit;
-}
