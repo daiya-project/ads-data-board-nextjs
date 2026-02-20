@@ -19,9 +19,9 @@ export interface ManagerRow {
  * Get list of managers from shared.manager table.
  * Filters by manager_team = 'ads' and orders by id ascending.
  *
- * @returns Array of managers or null on error
+ * @returns Array of managers. Throws on error (42-data-supabase-rule).
  */
-export async function getManagerList(): Promise<ManagerRow[] | null> {
+export async function getManagerList(): Promise<ManagerRow[]> {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -33,7 +33,7 @@ export async function getManagerList(): Promise<ManagerRow[] | null> {
 
   if (error) {
     console.error("Manager 목록 조회 오류:", error);
-    return null;
+    throw new Error(`담당자 목록 조회 실패: ${error.message}`);
   }
 
   return (data ?? []) as ManagerRow[];
@@ -76,34 +76,40 @@ export async function getClientIdsByManagerFilter(
 
   if (managerIds.length === 0) return new Set();
 
-  // Build query
-  let query = supabase
+  let baseQuery = supabase
     .schema("ads")
     .from("client")
     .select("client_id")
     .not("manager_id", "is", null);
 
-  // Special case: manager_id = 99 includes null manager_id
   if (managerIds.includes(99)) {
     const orConditions = managerIds.map((id) => `manager_id.eq.${id}`).join(",");
-    query = query.or(`${orConditions},manager_id.is.null`);
+    baseQuery = baseQuery.or(`${orConditions},manager_id.is.null`);
   } else if (managerIds.length === 1) {
-    query = query.eq("manager_id", managerIds[0]);
+    baseQuery = baseQuery.eq("manager_id", managerIds[0]);
   } else {
-    query = query.in("manager_id", managerIds);
+    baseQuery = baseQuery.in("manager_id", managerIds);
   }
 
-  const { data, error } = await query;
+  const PAGE_SIZE = 1000; // 42-data-supabase-rule: PostgREST max 1000/request
+  const allRows: { client_id: string | number }[] = [];
+  let offset = 0;
 
-  if (error) {
-    console.error("담당자 필터 조회 오류:", error);
-    return new Set();
+  while (true) {
+    const { data, error } = await baseQuery
+      .order("client_id", { ascending: true })
+      .range(offset, offset + PAGE_SIZE - 1);
+
+    if (error) {
+      console.error("담당자 필터 조회 오류:", error);
+      throw new Error(`담당자 필터 조회 실패: ${error.message}`);
+    }
+
+    const page = (data ?? []) as { client_id: string | number }[];
+    allRows.push(...page);
+    if (page.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
   }
 
-  if (!data?.length) return new Set();
-
-  // client_id is string per 40-data-main-rule
-  return new Set(
-    data.map((row) => String((row as { client_id: string | number }).client_id))
-  );
+  return new Set(allRows.map((row) => String(row.client_id)));
 }

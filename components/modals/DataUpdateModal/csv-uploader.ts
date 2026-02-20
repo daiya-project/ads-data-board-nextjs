@@ -11,6 +11,8 @@ import { buildUpsertPayload } from "./csv-mapper";
 import { devLog } from "./devlog";
 
 const BATCH_SIZE = 1000;
+/** PostgREST/Supabase default max rows per request (42-data-supabase-rule). */
+const SELECT_PAGE_SIZE = 1000;
 const PROGRESS_INSERT_START = 55;
 const PROGRESS_INSERT_END = 95;
 
@@ -46,11 +48,10 @@ async function syncClients(
       .limit(chunk.length + 10);
 
     if (checkError) {
-      devLog(`기존 광고주 확인 오류: ${checkError.message}`);
-    } else {
-      for (const row of (existingInDb ?? []) as { client_id: string }[]) {
-        existingInDbSet.add(row.client_id);
-      }
+      throw new Error(`기존 광고주 확인 오류: ${checkError.message}`);
+    }
+    for (const row of (existingInDb ?? []) as { client_id: string }[]) {
+      existingInDbSet.add(row.client_id);
     }
   }
 
@@ -62,28 +63,20 @@ async function syncClients(
   );
 
   if (reallyNewClients.length > 0) {
-    const { error: insertError } = await supabase
-      .schema("ads")
-      .from("client")
-      .insert(
-        reallyNewClients as unknown as Record<string, unknown>[],
-      );
+    for (let i = 0; i < reallyNewClients.length; i += BATCH_SIZE) {
+      const batch = reallyNewClients.slice(i, i + BATCH_SIZE);
+      const batchIdx = Math.floor(i / BATCH_SIZE) + 1;
+      const { error: insertError } = await supabase
+        .schema("ads")
+        .from("client")
+        .insert(batch as unknown as Record<string, unknown>[]);
 
-    if (insertError) {
-      devLog(`새 광고주 추가 오류: ${insertError.message}`);
-      for (const client of reallyNewClients) {
-        const { error: singleError } = await supabase
-          .schema("ads")
-          .from("client")
-          .insert([client as unknown as Record<string, unknown>]);
-        if (singleError) {
-          devLog(
-            `광고주 ${client.client_id} 추가 실패: ${singleError.message}`,
-          );
-        }
+      if (insertError) {
+        throw new Error(
+          `새 광고주 추가 오류 (배치 ${batchIdx}): ${insertError.message}`,
+        );
       }
-    } else {
-      devLog(`새 광고주 ${reallyNewClients.length}개 추가 완료`);
+      devLog(`새 광고주 배치 ${batchIdx}: ${batch.length}개 추가 완료`);
     }
   }
 
@@ -95,7 +88,7 @@ async function syncClients(
         .update({ client_name: client.client_name })
         .eq("client_id", client.client_id);
       if (updateError) {
-        devLog(
+        throw new Error(
           `광고주 ${client.client_id} 업데이트 실패: ${updateError.message}`,
         );
       }
@@ -155,6 +148,32 @@ async function insertDailyBatches(
       devLog(`배치 ${batchIdx + 1}: ${batch.length}개 레코드 삽입 완료`);
     }
   }
+}
+
+/** Fetch all rows from ads.client with .range() pagination (42-data-supabase-rule: max 1000/request). */
+async function fetchAllClientRows(
+  supabase: SupabaseClient,
+): Promise<{ client_id: string; manager_id: number | null }[]> {
+  const rows: { client_id: string; manager_id: number | null }[] = [];
+  let offset = 0;
+  while (true) {
+    const from = offset;
+    const to = offset + SELECT_PAGE_SIZE - 1;
+    const { data, error } = await supabase
+      .schema("ads")
+      .from("client")
+      .select("client_id, manager_id")
+      .order("client_id", { ascending: true })
+      .range(from, to);
+    if (error) {
+      throw new Error(`클라이언트 데이터 조회 오류: ${error.message}`);
+    }
+    const page = (data ?? []) as { client_id: string; manager_id: number | null }[];
+    rows.push(...page);
+    if (page.length < SELECT_PAGE_SIZE) break;
+    offset += SELECT_PAGE_SIZE;
+  }
+  return rows;
 }
 
 async function fetchHolidays(supabase: SupabaseClient): Promise<Set<string>> {
@@ -227,19 +246,10 @@ export async function updateDataFromCSV(
 
   report("광고주 데이터 조회 중...", 30);
 
-  const { data: clientData, error: clientError } = await supabase
-    .schema("ads")
-    .from("client")
-    .select("client_id, manager_id")
-    .limit(SUPABASE_SELECT_MAX_ROWS);
-
-  if (clientError) {
-    throw new Error(`클라이언트 데이터 조회 오류: ${clientError.message}`);
-  }
-
+  const clientData = await fetchAllClientRows(supabase);
   const clientManagerMap: Record<string, number | null> = {};
   const existingClientIds = new Set<string>();
-  for (const row of (clientData ?? []) as { client_id: string; manager_id: number | null }[]) {
+  for (const row of clientData) {
     clientManagerMap[row.client_id] = row.manager_id;
     existingClientIds.add(row.client_id);
   }
@@ -326,27 +336,18 @@ export async function forceUpdateDataFromCSV(
     .lte("date", endDate);
 
   if (deleteError) {
-    // 선택한 기간에 DB에 데이터가 없어 삭제할 행이 없을 수 있음 → 삭제는 스킵하고 해당 기간 CSV 데이터만 업로드
-    devLog(`기존 데이터 삭제 스킵(해당 기간 데이터 없음 또는 오류): ${deleteError.message}. 선택 기간 CSV 업로드 진행.`);
-  } else {
-    devLog(`${startDate} ~ ${endDate} 기존 데이터 삭제 완료`);
+    throw new Error(
+      `기존 데이터 삭제 실패 (${startDate} ~ ${endDate}): ${deleteError.message}`,
+    );
   }
+  devLog(`${startDate} ~ ${endDate} 기존 데이터 삭제 완료`);
 
   report("광고주 데이터 조회 중...", 35);
 
-  const { data: clientData, error: clientError } = await supabase
-    .schema("ads")
-    .from("client")
-    .select("client_id, manager_id")
-    .limit(SUPABASE_SELECT_MAX_ROWS);
-
-  if (clientError) {
-    throw new Error(`클라이언트 데이터 조회 오류: ${clientError.message}`);
-  }
-
+  const clientData = await fetchAllClientRows(supabase);
   const clientManagerMap: Record<string, number | null> = {};
   const existingClientIds = new Set<string>();
-  for (const row of (clientData ?? []) as { client_id: string; manager_id: number | null }[]) {
+  for (const row of clientData) {
     clientManagerMap[row.client_id] = row.manager_id;
     existingClientIds.add(row.client_id);
   }

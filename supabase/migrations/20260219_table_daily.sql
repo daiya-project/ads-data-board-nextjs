@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS ads.daily (
   client_name      TEXT,
   manager_id       INTEGER REFERENCES shared.manager(id),
   sales_manager_id INTEGER REFERENCES shared.manager(id),
-  amount           INTEGER NOT NULL DEFAULT 0,
+  revenue          INTEGER NOT NULL DEFAULT 0,
   vimp             INTEGER,
   click            INTEGER,
   conversion       INTEGER,
@@ -25,7 +25,7 @@ COMMENT ON COLUMN ads.daily.client_id IS '클라이언트 ID (문자열, 선행 
 COMMENT ON COLUMN ads.daily.client_name IS '클라이언트명 스냅샷';
 COMMENT ON COLUMN ads.daily.manager_id IS '담당 매니저 ID → shared.manager(id), NULL 허용';
 COMMENT ON COLUMN ads.daily.sales_manager_id IS '영업 매니저 ID → shared.manager(id), NULL 허용';
-COMMENT ON COLUMN ads.daily.amount IS '매출(금액)';
+COMMENT ON COLUMN ads.daily.revenue IS '매출(금액)';
 COMMENT ON COLUMN ads.daily.vimp IS '노출 수';
 COMMENT ON COLUMN ads.daily.click IS '클릭 수';
 COMMENT ON COLUMN ads.daily.conversion IS '전환 수';

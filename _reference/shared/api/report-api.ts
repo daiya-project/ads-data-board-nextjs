@@ -49,7 +49,7 @@ export interface DailyRawRow {
   client_name: string;
   manager_id: number | null;
   date: string;
-  amount: number;
+  revenue: number;
 }
 
 /** 일별 리포트용 ads_data_daily 페이지네이션 + 병렬 조회 */
@@ -66,7 +66,7 @@ export async function fetchDailyReportRows(
       const to = from + PAGE_SIZE - 1;
       const promise = (supabase
         .from('ads_data_daily')
-        .select('client_id, client_name, manager_id, date, amount')
+        .select('client_id, client_name, manager_id, date, revenue')
         .in('date', dateRange)
         .order('client_id', { ascending: true })
         .order('date', { ascending: false }) as { range: (a: number, b: number) => Promise<{ data: DailyRawRow[] | null; error: unknown }> }).range(from, to);

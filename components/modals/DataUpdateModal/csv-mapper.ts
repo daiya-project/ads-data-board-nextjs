@@ -12,7 +12,7 @@ export interface InsertDaily {
   date: string;
   client_id: string;
   client_name: string;
-  amount: number;
+  revenue: number;
   manager_id: number | null;
   is_holiday: boolean;
   vimp?: number;
@@ -72,12 +72,12 @@ export function buildUpsertPayload(
       continue;
     }
 
-    const amount = parseInt(
-      (record.amount ?? "0").replace(/,/g, ""),
+    const revenue = parseInt(
+      (record.amount ?? record.revenue ?? "0").replace(/,/g, ""),
       10,
     );
-    if (Number.isNaN(amount)) {
-      devLog(`amount 파싱 실패: ${record.amount}`);
+    if (Number.isNaN(revenue)) {
+      devLog(`revenue(amount) 파싱 실패: ${record.amount ?? record.revenue}`);
       continue;
     }
 
@@ -111,7 +111,7 @@ export function buildUpsertPayload(
       date: dateStr,
       client_id: clientId,
       client_name: clientName,
-      amount,
+      revenue,
       manager_id: clientManagerMap[clientId] ?? null,
       is_holiday: isHoliday,
     };

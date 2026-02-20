@@ -17,7 +17,7 @@
 | `client_name`      | string  | Y      | 클라이언트명 (스냅샷)                       |
 | `manager_id`       | number  | Y      | 담당 매니저 ID → `shared_manager.id`        |
 | `sales_manager_id` | number  | Y      | 영업 매니저 ID → `shared_manager.id`        |
-| `amount`           | number  | N      | 매출(금액)                                  |
+| `revenue`          | number  | N      | 매출(금액)                                  |
 | `vimp`             | number  | Y      | 노출 수                                     |
 | `click`            | number  | Y      | 클릭 수                                     |
 | `conversion`       | number  | Y      | 전환 수                                     |
@@ -326,7 +326,7 @@ SELECT
   c.second_manager_id,
   m.manager_name,
   m2.manager_name as second_manager_name,
-  d.amount,
+  d.revenue,
   d.vimp,
   d.click,
   d.conversion,

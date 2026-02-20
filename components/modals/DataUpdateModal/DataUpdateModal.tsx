@@ -67,7 +67,9 @@ export function DataUpdateModal() {
     resetUpsertRange();
     setIsImporting(false);
     setLatestDate(null);
-    getLatestDateFromDb().then(setLatestDate);
+    getLatestDateFromDb()
+      .then(setLatestDate)
+      .catch(() => setLatestDate(null));
   }, [open, resetProgress, resetUpsertRange]);
 
   const handleOpenChange = useCallback(

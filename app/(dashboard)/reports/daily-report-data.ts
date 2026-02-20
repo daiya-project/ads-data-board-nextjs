@@ -78,7 +78,7 @@ export async function fetchDailyReportData(
         amounts: new Map(),
       });
     }
-    clientDataMap.get(clientId)!.amounts.set(row.date, row.amount ?? 0);
+    clientDataMap.get(clientId)!.amounts.set(row.date, row.revenue ?? 0);
   }
 
   const mostRecentDate = dateRange[0];
